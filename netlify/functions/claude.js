@@ -16,9 +16,9 @@ exports.handler = async (event) => {
     const month = parseInt(today.slice(5, 7));
     const season = month >= 3 && month <= 5 ? '봄' : month >= 6 && month <= 8 ? '여름' : month >= 9 && month <= 11 ? '가을' : '겨울';
 
-    const igContent = channels.includes('ig') ? '지금 올려야 할 릴스 아이템 TOP5와 릴스 기획 TOP3, 피해야할것' : '';
-    const ytContent = channels.includes('yt') ? '기획할 숏츠 주제 TOP5와 영상 기획 TOP3, 피해야할것' : '';
-    const blogContent = channels.includes('blog') ? 'SEO 키워드 TOP5와 포스팅 기획 TOP3, 피해야할것' : '';
+    const igContent = channels.includes('ig') ? '### 🔥 지금 올려야 할 TOP 5\\n- 아이템명: 이유\\n\\n### 릴스 기획 TOP 3\\n- 제목/포맷: 타이밍\\n\\n### ⚠️ 지금 피해야 할 것\\n- 아이템: 이유' : '';
+    const ytContent = channels.includes('yt') ? '### 🔥 기획할 주제 TOP 5\\n- 주제: 이유\\n\\n### 영상 기획 TOP 3\\n- 제목(SEO키워드): 타이밍\\n\\n### ⚠️ 피해야 할 것\\n- 아이템: 이유' : '';
+    const blogContent = channels.includes('blog') ? '### 🔥 SEO 키워드 TOP 5\\n- 키워드: 검색 근거\\n\\n### 포스팅 기획 TOP 3\\n- 제목: 구조/타이밍\\n\\n### ⚠️ 피해야 할 것\\n- 키워드: 이유' : '';
 
     const prompt = `한국 패션 SNS 전략가로서 분석해주세요.
 
