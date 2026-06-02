@@ -10,19 +10,19 @@ exports.handler = async (event) => {
   try {
     const { clientId, clientSecret, startDate, endDate, timeUnit, category } = JSON.parse(event.body);
 
-    // 네이버 쇼핑인사이트 카테고리별 트렌드 API
-    // https://developers.naver.com/docs/serviceapi/datalab/shopping/guide.md
+    // 네이버 쇼핑인사이트 카테고리별 인기 키워드 API
+    // category: 카테고리 코드 (패션의류=50000167, 패션잡화=50000172)
     const reqBody = JSON.stringify({
       startDate,
       endDate,
       timeUnit: timeUnit || 'week',
-      category: [{ name: 'fashion', param: [category] }],
+      category,
       device: '',
       gender: '',
       ages: []
     });
 
-    const response = await fetch('https://openapi.naver.com/v1/datalab/shopping/categories', {
+    const response = await fetch('https://openapi.naver.com/v1/datalab/shopping/category/keywords', {
       method: 'POST',
       headers: {
         'X-Naver-Client-Id': clientId,
@@ -34,41 +34,48 @@ exports.handler = async (event) => {
 
     const text = await response.text();
     let data;
-    try { data = JSON.parse(text); }
-    catch (e) {
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
       return {
         statusCode: 500,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-        body: JSON.stringify({ error: '응답 파싱 실패: ' + text.slice(0, 200) })
+        body: JSON.stringify({ error: '응답 파싱 실패: ' + text.slice(0, 300) })
       };
     }
 
-    if (data.errorCode || data.errorMessage) {
+    if (data.errorCode || data.errorMessage || !response.ok) {
       return {
         statusCode: 400,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-        body: JSON.stringify({ error: data.message || data.errorMessage, errorCode: data.errorCode })
+        body: JSON.stringify({ error: data.message || data.errorMessage || 'API 오류', errorCode: data.errorCode, raw: data })
       };
     }
 
-    // results[0].data = [{period, ratio}, ...] — 기간별 관심도 시계열
-    // 관심도 합산해서 키워드 대신 카테고리 트렌드로 반환
-    const periods = (data.results && data.results[0] && data.results[0].data) || [];
+    // /category/keywords 응답 구조:
+    // { results: [{ keyword, period, ratio }] }
+    // keyword별 최근 관심도 합산해서 TOP 순으로 정렬
+    const results = data.results || [];
 
-    // 최근 4주 평균 관심도
-    const recent = periods.slice(-4);
-    const avgRatio = recent.length
-      ? (recent.reduce((s, d) => s + d.ratio, 0) / recent.length).toFixed(1)
-      : null;
+    // 키워드별 최근 평균 관심도 계산
+    const keywordMap = {};
+    for (const item of results) {
+      if (!keywordMap[item.keyword]) keywordMap[item.keyword] = [];
+      keywordMap[item.keyword].push(item.ratio);
+    }
 
-    // 키워드 형태로 맞춰서 반환 (카테고리 트렌드이므로 keyword = 카테고리명)
-    const catName = data.results && data.results[0] ? data.results[0].title : category;
-    const keywords = avgRatio ? [{ keyword: catName, ratio: avgRatio, periods }] : [];
+    const keywords = Object.entries(keywordMap)
+      .map(([keyword, ratios]) => ({
+        keyword,
+        ratio: (ratios.reduce((s, r) => s + r, 0) / ratios.length).toFixed(1)
+      }))
+      .sort((a, b) => b.ratio - a.ratio)
+      .slice(0, 20);
 
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ keywords, raw: data })
+      body: JSON.stringify({ keywords })
     };
 
   } catch (err) {
