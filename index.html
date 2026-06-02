@@ -19,31 +19,26 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink)
 .hbadges{display:flex;gap:5px;}
 .hbadge{font-size:9px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:3px;border:1px solid var(--border);color:var(--ink3);}
 .hbadge.live{border-color:var(--green);color:var(--green);background:rgba(22,163,74,0.06);}
-
 .layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 52px);}
 .sidebar{background:var(--white);border-right:1px solid var(--border);padding:20px 18px;display:flex;flex-direction:column;gap:16px;height:calc(100vh - 52px);overflow-y:auto;position:sticky;top:52px;}
 .slabel{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:7px;display:flex;align-items:center;gap:6px;}
 .slabel::after{content:'';flex:1;height:1px;background:var(--border);}
 .finput{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 11px;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:var(--ink);outline:none;width:100%;}
 .finput:focus{border-color:var(--accent);}
-.flabel{font-size:11px;font-weight:600;color:var(--ink2);margin-bottom:4px;}
-.fgroup{display:flex;flex-direction:column;gap:4px;margin-bottom:6px;}
-.fhint{font-size:10px;color:var(--ink3);line-height:1.5;}
-
+.fhint{font-size:10px;color:var(--ink3);line-height:1.5;margin-top:4px;}
 .pub-box{background:var(--purple-bg);border:1.5px solid rgba(124,58,237,0.2);border-radius:9px;padding:10px 12px;}
 .pub-label{font-size:11px;font-weight:700;color:var(--purple);margin-bottom:6px;}
-
-.ch-row{display:flex;gap:6px;flex-wrap:wrap;}
-.ch-btn{flex:1;min-width:70px;padding:7px 8px;border-radius:7px;border:1.5px solid var(--border);background:var(--bg);font-size:11px;font-weight:600;font-family:'Noto Sans KR',sans-serif;cursor:pointer;text-align:center;transition:all .15s;color:var(--ink2);}
+.ch-row{display:flex;gap:6px;}
+.ch-btn{flex:1;padding:7px 4px;border-radius:7px;border:1.5px solid var(--border);background:var(--bg);font-size:11px;font-weight:600;font-family:'Noto Sans KR',sans-serif;cursor:pointer;text-align:center;transition:all .15s;color:var(--ink2);}
 .ch-btn.on-ig{border-color:#e1306c;background:rgba(225,48,108,0.07);color:#e1306c;}
 .ch-btn.on-yt{border-color:#cc0000;background:rgba(204,0,0,0.07);color:#cc0000;}
 .ch-btn.on-blog{border-color:#2563eb;background:rgba(37,99,235,0.07);color:#2563eb;}
-
 .key-row{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--ink3);cursor:pointer;padding:3px 0;}
 .key-body{overflow:hidden;max-height:0;transition:max-height .3s;}
 .key-body.open{max-height:300px;padding-top:8px;}
+.flabel{font-size:11px;font-weight:600;color:var(--ink2);margin-bottom:4px;}
+.fgroup{display:flex;flex-direction:column;gap:4px;margin-bottom:6px;}
 .save-btn{margin-top:8px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-
 .run-btn{width:100%;background:var(--purple);color:#fff;border:none;border-radius:9px;padding:13px;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;}
 .run-btn:hover:not(:disabled){background:#6d28d9;transform:translateY(-1px);}
 .run-btn:disabled{opacity:.4;cursor:not-allowed;}
@@ -52,9 +47,8 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink)
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:420px;text-align:center;gap:10px;}
 .empty-ico{font-size:48px;opacity:.15;}
 .empty-title{font-size:18px;font-weight:900;letter-spacing:-.02em;color:var(--ink2);}
-.empty-desc{font-size:12.5px;color:var(--ink3);line-height:1.65;max-width:320px;}
+.empty-desc{font-size:12.5px;color:var(--ink3);line-height:1.65;max-width:340px;}
 
-/* Progress */
 .prog-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px;display:none;}
 .prog-card.show{display:block;}
 .prog-steps{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
@@ -66,18 +60,38 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink)
 .pstep.active .pico{background:var(--purple);color:#fff;animation:spin 1s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* Result */
 .res-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
 .res-title{font-size:19px;font-weight:900;letter-spacing:-.03em;}
 .res-meta{font-size:10px;color:var(--ink3);font-family:'DM Mono',monospace;margin-top:3px;}
-.new-btn{background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;}
+.new-btn{background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 
-/* Top picks */
+/* Hot items grid */
+.items-section{background:var(--white);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden;box-shadow:var(--shadow);}
+.items-head{padding:12px 18px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.items-badge{font-size:9px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:3px;font-weight:600;}
+.badge-shop{background:rgba(3,199,90,.1);color:#059444;border:1px solid rgba(3,199,90,.2);}
+.badge-ai{background:var(--purple-bg);color:var(--purple);border:1px solid rgba(124,58,237,.2);}
+.items-title{font-size:13px;font-weight:700;}
+.items-body{padding:16px 18px;}
+.items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;}
+.item-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .15s;}
+.item-card:hover{border-color:var(--purple);background:var(--purple-bg);}
+.item-card.hot{border-color:rgba(220,38,38,.3);background:rgba(220,38,38,.04);}
+.item-card.rising{border-color:rgba(22,163,74,.3);background:rgba(22,163,74,.04);}
+.item-rank{font-size:9px;font-family:'DM Mono',monospace;color:var(--ink3);margin-bottom:3px;}
+.item-name{font-size:12px;font-weight:700;color:var(--ink);}
+.item-val{font-size:10px;color:var(--ink3);margin-top:3px;}
+.item-tag{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;margin-top:4px;display:inline-block;}
+.tag-hot{background:rgba(220,38,38,.1);color:#dc2626;}
+.tag-up{background:rgba(22,163,74,.1);color:#16a34a;}
+.tag-new{background:var(--purple-bg);color:var(--purple);}
+.tag-down{background:rgba(156,163,175,.1);color:#9ca3af;}
+
+/* Picks */
 .picks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
 .pick{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 15px;box-shadow:var(--shadow);}
 .pick.fire{border-color:rgba(200,80,42,.3);background:rgba(200,80,42,.03);}
 .pick.predict{border-color:rgba(124,58,237,.3);background:var(--purple-bg);}
-.pick.avoid{border-color:rgba(156,163,175,.3);background:rgba(156,163,175,.04);}
 .pick-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:5px;}
 .pick-lbl.fire{color:var(--accent);}
 .pick-lbl.predict{color:var(--purple);}
@@ -85,62 +99,25 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink)
 .pick-desc{font-size:11px;color:var(--ink3);margin-top:4px;line-height:1.5;}
 .pick-timing{font-size:9.5px;font-family:'DM Mono',monospace;font-weight:600;color:var(--purple);margin-top:5px;}
 
-/* Signal grid */
-.sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
-.sig-card{background:var(--white);border:1px solid var(--border);border-radius:11px;overflow:hidden;box-shadow:var(--shadow);}
-.sig-head{padding:11px 15px 9px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;}
-.sig-badge{font-size:9px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:3px;font-weight:600;}
-.badge-live{background:rgba(22,163,74,.1);color:#059444;border:1px solid rgba(22,163,74,.2);}
-.badge-trend{background:rgba(37,99,235,.08);color:#1d4ed8;border:1px solid rgba(37,99,235,.2);}
-.badge-naver{background:rgba(3,199,90,.1);color:#059444;border:1px solid rgba(3,199,90,.2);}
-.badge-pattern{background:rgba(180,83,9,.1);color:var(--amber);border:1px solid rgba(180,83,9,.2);}
-.sig-title{font-size:12px;font-weight:700;}
-.sig-body{padding:12px 15px 14px;}
-
-.kw-bars{display:flex;flex-direction:column;gap:7px;}
-.kw-row{display:flex;align-items:center;gap:7px;}
-.kw-name{font-size:11px;font-weight:600;width:90px;flex-shrink:0;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bar-bg{flex:1;height:4px;background:var(--bg2);border-radius:2px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:2px;transition:width 1s cubic-bezier(.22,1,.36,1);}
-.bar-green{background:linear-gradient(90deg,#16a34a,#4ade80);}
-.bar-blue{background:linear-gradient(90deg,#2563eb,#60a5fa);}
-.bar-amber{background:linear-gradient(90deg,#b45309,#fbbf24);}
-.bar-purple{background:linear-gradient(90deg,#7c3aed,#a855f7);}
-.kw-val{font-size:9px;font-family:'DM Mono',monospace;color:var(--ink3);width:32px;text-align:right;flex-shrink:0;}
-.kw-tag{font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;flex-shrink:0;}
-.tag-up{background:rgba(22,163,74,.1);color:#16a34a;}
-.tag-hot{background:rgba(220,38,38,.1);color:#dc2626;}
-.tag-down{background:rgba(156,163,175,.1);color:#9ca3af;}
-
-/* Trend items */
-.trend-items{display:flex;flex-direction:column;gap:6px;}
-.trend-item{padding:7px 10px;background:var(--bg);border-radius:7px;border-left:2px solid var(--purple);}
-.trend-kw{font-size:11.5px;font-weight:700;}
-.trend-meta{font-size:9.5px;color:var(--ink3);margin-top:2px;font-family:'DM Mono',monospace;}
-.trend-reason{font-size:10.5px;color:var(--ink2);margin-top:3px;line-height:1.4;}
-
 /* AI section */
-.ai-section{background:var(--white);border:1.5px solid rgba(124,58,237,.2);border-radius:13px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:16px;}
+.ai-section{background:var(--white);border:1.5px solid rgba(124,58,237,.2);border-radius:13px;overflow:hidden;box-shadow:var(--shadow);}
 .ai-head{padding:14px 18px 12px;border-bottom:1px solid rgba(124,58,237,.12);background:var(--purple-bg);display:flex;align-items:center;gap:9px;}
 .ai-title{font-size:13px;font-weight:800;color:var(--purple);}
 .ai-body{padding:18px;}
 .ch-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
 .ch-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;}
-.ch-head{padding:10px 13px 8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;}
+.ch-head{padding:10px 13px 8px;border-bottom:1px solid var(--border);}
 .ch-body{padding:11px 13px 13px;}
-.ai-out{font-size:11.5px;line-height:1.75;color:var(--ink2);}
-.ai-out h3{font-size:11px;font-weight:800;color:var(--ink);margin:10px 0 5px;}
+.ai-out{font-size:11.5px;line-height:1.8;color:var(--ink2);}
+.ai-out h3{font-size:11px;font-weight:800;color:var(--ink);margin:10px 0 5px;padding-bottom:3px;border-bottom:1px solid var(--border);}
 .ai-out h3:first-child{margin-top:0;}
-.ai-out ul{padding-left:13px;}
-.ai-out li{margin-bottom:3px;}
+.ai-out ul{padding-left:14px;}
+.ai-out li{margin-bottom:4px;}
 .ai-out strong{color:var(--ink);}
-.ai-out .hot{color:#dc2626;font-weight:700;}
-.ai-out .rising{color:#16a34a;font-weight:700;}
-.ai-out .watch{color:#b45309;font-weight:700;}
 
 .err{background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.18);border-radius:9px;padding:12px 15px;font-size:12px;color:#dc2626;display:none;margin-bottom:14px;}
 .err.show{display:block;}
-.notice{font-size:10px;color:var(--ink3);padding:8px 11px;background:var(--bg2);border-radius:6px;line-height:1.5;margin-top:7px;}
+.notice{font-size:10px;color:var(--ink3);padding:8px 11px;background:var(--bg2);border-radius:6px;line-height:1.5;margin-top:8px;}
 .notice a{color:var(--accent);}
 </style>
 </head>
@@ -148,7 +125,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink)
 <div class="header">
   <div class="logo"><div class="logo-dot"></div>패션 트렌드 예측</div>
   <div class="hbadges">
-    <span class="hbadge live">Google Trends 실시간</span>
+    <span class="hbadge live">쇼핑인사이트 실시간</span>
     <span class="hbadge live">Naver DataLab</span>
     <span class="hbadge">Claude AI</span>
   </div>
@@ -161,7 +138,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink)
       <div class="pub-box">
         <div class="pub-label">📅 언제 발행할 콘텐츠인가요?</div>
         <input type="date" class="finput" id="pubDate">
-        <div class="fhint" style="margin-top:5px">발행일 역산으로 지금 기획해야 할 키워드를 예측해요</div>
+        <div class="fhint">발행일 역산으로 지금 기획해야 할 아이템을 예측해요</div>
       </div>
     </div>
 
@@ -181,8 +158,8 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink)
 
     <div>
       <div class="slabel">📱 요즘 SNS 트렌드 포맷</div>
-      <textarea class="finput" id="snsFormats" rows="4" placeholder="팀원이 발견한 유행 포맷 입력&#10;예: 주술회전 스타일 코디&#10;밀레니얼 vs 젠지 비교&#10;GRWM / 비포애프터 변신룩" style="resize:none;line-height:1.6"></textarea>
-      <div class="fhint">지금 SNS에서 반응 좋은 포맷 → Claude가 패션 기획안으로 만들어줘요</div>
+      <textarea class="finput" id="snsFormats" rows="4" placeholder="팀원이 발견한 유행 포맷 입력&#10;예: 라탄백 코디법&#10;메쉬백 vs 클러치 비교&#10;주술회전 스타일 패션" style="resize:none;line-height:1.6"></textarea>
+      <div class="fhint">발견한 트렌드 포맷 → Claude가 기획안으로 만들어줘요</div>
     </div>
 
     <div>
@@ -196,14 +173,14 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink)
       </div>
     </div>
 
-    <button class="run-btn" id="runBtn" onclick="run()">🔮 트렌드 예측 시작</button>
+    <button class="run-btn" id="runBtn" onclick="run()"><span>🔮</span><span>트렌드 예측 시작</span></button>
   </div>
 
   <div class="main" id="main">
     <div class="empty" id="emptyState">
       <div class="empty-ico">🔮</div>
       <div class="empty-title">발행일 설정 후<br>예측을 시작하세요</div>
-      <div class="empty-desc">Google Trends 실시간 데이터 + 네이버 과거 패턴을 분석해서<br><strong>발행 시점에 피크칠 키워드</strong>를 예측해요</div>
+      <div class="empty-desc">네이버 쇼핑인사이트에서 <strong>지금 실제로 뜨는 패션 아이템</strong>을 가져와서<br>발행 시점에 뭐가 피크칠지 예측해요</div>
     </div>
 
     <div class="err" id="errBox"></div>
@@ -211,11 +188,11 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink)
     <div class="prog-card" id="progCard">
       <div class="slabel">분석 진행 중</div>
       <div class="prog-steps">
-        <div class="pstep" id="ps1"><div class="pico">1</div><span>Google Trends — 실시간 패션 급상승 키워드 수집</span></div>
-        <div class="pstep" id="ps2"><div class="pico">2</div><span>네이버 DataLab — 현재 검색량 + 1년 전 패턴 비교</span></div>
-        <div class="pstep" id="ps3"><div class="pico">3</div><span>시즌 패턴 & 급상승 속도 분석</span></div>
+        <div class="pstep" id="ps1"><div class="pico">1</div><span>네이버 쇼핑인사이트 — 패션 아이템 실시간 TOP 수집</span></div>
+        <div class="pstep" id="ps2"><div class="pico">2</div><span>작년 동기 데이터 비교 — YoY 패턴 분석</span></div>
+        <div class="pstep" id="ps3"><div class="pico">3</div><span>급상승 속도 & 시즌 패턴 분석</span></div>
         <div class="pstep" id="ps4"><div class="pico">4</div><span>Claude AI — 발행일 기준 역산 예측</span></div>
-        <div class="pstep" id="ps5"><div class="pico">5</div><span>채널별 키워드 & 기획안 생성</span></div>
+        <div class="pstep" id="ps5"><div class="pico">5</div><span>채널별 아이템 & 기획안 생성</span></div>
       </div>
     </div>
 
@@ -225,34 +202,35 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink)
           <div class="res-title" id="resTitle"></div>
           <div class="res-meta" id="resMeta"></div>
         </div>
-        <button class="new-btn" onclick="reset()">새 예측 ↺</button>
+        <button class="new-btn" onclick="resetUI()">새 예측 ↺</button>
       </div>
 
+      <!-- TOP PICKS -->
       <div class="picks" id="topPicks"></div>
 
-      <div class="sig-grid">
-        <div class="sig-card">
-          <div class="sig-head"><span class="sig-badge badge-live">LIVE</span><span class="sig-title">Google Trends 실시간</span></div>
-          <div class="sig-body"><div class="kw-bars" id="gtBars"></div><div class="notice" id="gtNotice" style="display:none"></div></div>
+      <!-- 쇼핑인사이트 실시간 아이템 -->
+      <div class="items-section">
+        <div class="items-head">
+          <span class="items-badge badge-shop">쇼핑인사이트</span>
+          <span class="items-title">지금 패션에서 검색 많은 아이템</span>
         </div>
-        <div class="sig-card">
-          <div class="sig-head"><span class="sig-badge badge-naver">NAVER</span><span class="sig-title">현재 검색량</span></div>
-          <div class="sig-body"><div class="kw-bars" id="naverBars"></div><div class="notice" id="naverNotice" style="display:none"></div></div>
-        </div>
-        <div class="sig-card">
-          <div class="sig-head"><span class="sig-badge badge-pattern">YoY</span><span class="sig-title">작년 동기 대비</span></div>
-          <div class="sig-body"><div class="kw-bars" id="yoyBars"></div></div>
-        </div>
-        <div class="sig-card">
-          <div class="sig-head"><span class="sig-badge badge-trend">급상승</span><span class="sig-title">급상승 속도</span></div>
-          <div class="sig-body"><div class="kw-bars" id="velBars"></div></div>
+        <div class="items-body">
+          <div style="margin-bottom:10px;font-size:11px;font-weight:700;color:var(--ink2)">👗 패션의류</div>
+          <div class="items-grid" id="clothingItems"></div>
+          <div style="margin:14px 0 10px;font-size:11px;font-weight:700;color:var(--ink2)">👜 패션잡화</div>
+          <div class="items-grid" id="accessoryItems"></div>
+          <div class="notice" id="shopNotice" style="display:none"></div>
         </div>
       </div>
 
+      <!-- AI 예측 -->
       <div class="ai-section">
-        <div class="ai-head"><span style="font-size:17px">🔮</span>
-          <div><div class="ai-title" id="aiTitle">AI 예측 — 채널별 기획안</div>
-          <div style="font-size:10px;color:var(--purple);opacity:.7;font-family:'DM Mono',monospace;margin-top:1px" id="aiMeta"></div></div>
+        <div class="ai-head">
+          <span style="font-size:17px">🔮</span>
+          <div>
+            <div class="ai-title" id="aiTitle">AI 예측 — 채널별 기획안</div>
+            <div style="font-size:10px;color:var(--purple);opacity:.7;font-family:'DM Mono',monospace;margin-top:1px" id="aiMeta"></div>
+          </div>
         </div>
         <div class="ai-body"><div class="ch-grid3" id="chCards"></div></div>
       </div>
@@ -261,20 +239,18 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink)
 </div>
 
 <script>
-const chs = {ig:true, yt:true, blog:true};
+const chs = {ig:true,yt:true,blog:true};
 
-window.addEventListener('load', () => {
-  const d = new Date(); d.setDate(d.getDate()+14);
-  document.getElementById('pubDate').value = fmt(d);
-  ['navId','navSec','claudeKey'].forEach(id => {
-    const v = localStorage.getItem(id); if(v) document.getElementById(id).value = v;
+window.addEventListener('load',()=>{
+  const d=new Date(); d.setDate(d.getDate()+14);
+  document.getElementById('pubDate').value=fmt(d);
+  ['navId','navSec','claudeKey'].forEach(id=>{
+    const v=localStorage.getItem(id); if(v) document.getElementById(id).value=v;
   });
 });
 
-function fmt(d){ return d instanceof Date ? d.toISOString().slice(0,10) : d; }
+function fmt(d){ return d instanceof Date?d.toISOString().slice(0,10):d; }
 function addDays(s,n){ const d=new Date(s); d.setDate(d.getDate()+n); return fmt(d); }
-function dateHash(s){ let h=0; for(let i=0;i<s.length;i++) h=(Math.imul(31,h)+s.charCodeAt(i))|0; return Math.abs(h); }
-function seeded(seed){ return ((seed*1664525+1013904223)&0xffffffff)/0xffffffff; }
 
 function toggleCh(c){
   chs[c]=!chs[c];
@@ -283,10 +259,10 @@ function toggleCh(c){
 }
 function toggleKeys(){
   document.getElementById('keyBody').classList.toggle('open');
-  document.getElementById('keyArrow').textContent = document.getElementById('keyBody').classList.contains('open')?'▲':'▼';
+  document.getElementById('keyArrow').textContent=document.getElementById('keyBody').classList.contains('open')?'▲':'▼';
 }
 function saveKeys(){
-  ['navId','navSec','claudeKey'].forEach(id => localStorage.setItem(id, document.getElementById(id).value));
+  ['navId','navSec','claudeKey'].forEach(id=>localStorage.setItem(id,document.getElementById(id).value));
   const btn=event.target; btn.textContent='✓ 저장됨'; setTimeout(()=>btn.textContent='저장',1500);
 }
 function setStep(n){
@@ -300,70 +276,62 @@ function setStep(n){
   }
 }
 function showErr(msg){const e=document.getElementById('errBox');e.textContent=msg;e.classList.add('show');}
-function reset(){
+function resetUI(){
   document.getElementById('resWrap').style.display='none';
   document.getElementById('progCard').classList.remove('show');
   document.getElementById('errBox').classList.remove('show');
   document.getElementById('emptyState').style.display='flex';
 }
 
-// ── Google Trends (Netlify 함수 경유) ──────────────────
-async function fetchGoogleTrends(pubDate) {
-  try {
-    const res = await fetch('/.netlify/functions/trends', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ pubDate })
-    });
-    if(!res.ok) throw new Error(`trends ${res.status}`);
-    const d = await res.json();
-    return d.keywords || [];
-  } catch(e) {
-    console.warn('Google Trends failed:', e.message);
-    return [];
+// ── 네이버 쇼핑인사이트 ──────────────────────────────────
+async function fetchShoppingInsight(navId, navSec, startDate, endDate) {
+  const categories = [
+    {id:'50000000', name:'패션의류'},
+    {id:'50000001', name:'패션잡화'},
+  ];
+  const results = {};
+
+  for (const cat of categories) {
+    try {
+      // 쇼핑인사이트 인기 검색어 (키워드 미리 안 정해도 됨!)
+      const r = await fetch('/.netlify/functions/naver_shopping', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          clientId: navId, clientSecret: navSec,
+          startDate, endDate, timeUnit:'week',
+          category: cat.id
+        })
+      });
+      if(!r.ok) throw new Error(`${r.status}`);
+      const d = await r.json();
+      results[cat.name] = d.keywords || [];
+    } catch(e) {
+      console.warn(`Shopping insight failed for ${cat.name}:`, e.message);
+      results[cat.name] = [];
+    }
   }
+  return results;
 }
 
-// ── 네이버 DataLab ─────────────────────────────────────
-async function fetchNaverBatch(id, sec, start, end, kws) {
-  const body = JSON.stringify({
-    startDate:start, endDate:end, timeUnit:'date',
-    keywordGroups: kws.map(k=>({groupName:k.name, keywords:k.kws})),
-    device:'', ages:[], gender:''
-  });
-  try {
-    const r = await fetch('/.netlify/functions/naver',{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({clientId:id, clientSecret:sec, body})
-    });
-    if(!r.ok) throw new Error(`naver ${r.status}`);
-    const d = await r.json();
-    if(d.errorCode) throw new Error(d.message||d.errorCode);
-    return (d.results||[]).map(res=>{
-      const pts=res.data||[]; if(!pts.length) return null;
-      return Math.round(pts.reduce((s,p)=>s+p.ratio,0)/pts.length*10)/10;
-    });
-  } catch(e) { console.warn('Naver batch failed:', e.message); return kws.map(()=>null); }
-}
-
-// ── Claude AI 예측 ─────────────────────────────────────
+// ── Claude AI ─────────────────────────────────────────────
 async function callClaude(apiKey, prompt) {
   const res = await fetch('/.netlify/functions/claude', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
       apiKey,
-      payload: { model:'claude-haiku-4-5-20251001', max_tokens:2500, messages:[{role:'user',content:prompt}] }
+      payload: { model:'claude-haiku-4-5-20251001', max_tokens:3000, messages:[{role:'user',content:prompt}] }
     })
   });
   if(!res.ok) throw new Error(`Claude ${res.status}`);
   const d = await res.json();
   if(d.error) throw new Error(d.error);
-  const raw = (d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-  const m = raw.match(/\{[\s\S]*\}/);
-  if(!m) throw new Error('Claude 응답 파싱 실패');
+  const raw=(d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+  const m=raw.match(/\{[\s\S]*\}/);
+  if(!m) throw new Error('응답 파싱 실패: '+raw.slice(0,100));
   return JSON.parse(m[0]);
 }
 
-// ── 메인 ───────────────────────────────────────────────
+// ── 메인 ───────────────────────────────────────────────────
 async function run() {
   const pubDate = document.getElementById('pubDate').value;
   const navId = document.getElementById('navId').value.trim();
@@ -379,148 +347,88 @@ async function run() {
   if(!claudeApiKey) return showErr('Claude API 키를 입력해주세요.');
   if(!activeChs.length) return showErr('채널을 하나 이상 선택해주세요.');
 
-  document.getElementById('runBtn').disabled=true;
-  document.getElementById('runBtn').querySelector('span:last-child').textContent='분석 중...';
+  const runBtn = document.getElementById('runBtn');
+  runBtn.disabled = true;
+  runBtn.querySelector('span:last-child').textContent = '분석 중...';
   document.getElementById('emptyState').style.display='none';
   document.getElementById('progCard').classList.add('show');
   document.getElementById('resWrap').style.display='none';
 
   try {
-    // STEP 1: Google Trends
+    // STEP 1: 네이버 쇼핑인사이트 현재
     setStep(1);
-    const gtData = await fetchGoogleTrends(pubDate);
+    const curEnd = today;
+    const curStart = addDays(today, -28);
+    const shopData = await fetchShoppingInsight(navId, navSec, curStart, curEnd);
+    const anyShopReal = Object.values(shopData).some(v=>v.length>0);
 
-    // STEP 2: 네이버 DataLab — 현재 + 1년 전
+    // STEP 2: 작년 동기 데이터
     setStep(2);
-    // Claude가 Google Trends 데이터 기반으로 키워드 목록 생성
-    const kwPrompt = `패션 트렌드 키워드 목록을 JSON으로만 반환하세요.
-오늘: ${today}, 발행일: ${pubDate}, 타겟: ${targetCtx||'한국 패션'}
-Google Trends 급상승: ${gtData.map(k=>k.keyword).join(', ')||'데이터 없음'}
+    const yoyEnd = addDays(today, -365);
+    const yoyStart = addDays(today, -393);
+    const yoyData = await fetchShoppingInsight(navId, navSec, yoyStart, yoyEnd);
 
-한국 패션 SNS에서 현재 뜨고 있거나 뜰 것 같은 키워드 12개를 선정해주세요.
-현재 시즌(${new Date(today).getMonth()+1}월)과 발행 시즌(${new Date(pubDate).getMonth()+1}월)을 반영하세요.
-
-{"keywords":[{"name":"키워드","kws":["검색어1","검색어2"]}]}`;
-
-    let kwList;
-    try {
-      const kwRes = await callClaude(claudeApiKey, kwPrompt);
-      kwList = kwRes.keywords || [];
-    } catch(e) {
-      kwList = [
-        {name:'여름코디',kws:['여름코디','여름룩']},{name:'린넨',kws:['린넨','린넨코디']},
-        {name:'슬래커코어',kws:['슬래커코어','슬래커룩']},{name:'올드머니',kws:['올드머니룩']},
-        {name:'발레코어',kws:['발레코어','발레룩']},{name:'고프코어',kws:['고프코어']},
-        {name:'Y2K',kws:['Y2K','Y2K코디']},{name:'러닝코어',kws:['러닝코어']},
-        {name:'덤코어',kws:['덤코어']},{name:'로맨틱코어',kws:['로맨틱코어']},
-        {name:'백꾸',kws:['백꾸','가방꾸미기']},{name:'믹스매치',kws:['믹스매치']},
-      ];
-    }
-
-    // 현재 2주 + 이전 2주 + 작년 동기 데이터
-    const curStart = addDays(today,-14), prevStart = addDays(today,-28);
-    const yoyStart = addDays(today,-379), yoyEnd = addDays(today,-365);
-    const BATCH=5;
-    const curVals=[], prevVals=[], yoyVals=[];
-
-    for(let i=0;i<kwList.length;i+=BATCH){
-      const b=kwList.slice(i,i+BATCH);
-      const [c,p,y] = await Promise.all([
-        fetchNaverBatch(navId,navSec,curStart,today,b),
-        fetchNaverBatch(navId,navSec,prevStart,curStart,b),
-        fetchNaverBatch(navId,navSec,yoyStart,yoyEnd,b),
-      ]);
-      curVals.push(...c); prevVals.push(...p); yoyVals.push(...y);
-      if(i+BATCH<kwList.length) await new Promise(r=>setTimeout(r,300));
-    }
-
-    const naverData = kwList.map((k,i)=>({
-      name:k.name,
-      cur: curVals[i],
-      prev: prevVals[i],
-      yoy: yoyVals[i],
-      simulated: curVals[i]===null,
-      velocity: curVals[i]!==null && prevVals[i]!==null && prevVals[i]>0
-        ? Math.round((curVals[i]-prevVals[i])/prevVals[i]*100) : null,
-      yoyChange: curVals[i]!==null && yoyVals[i]!==null && yoyVals[i]>0
-        ? Math.round((curVals[i]-yoyVals[i])/yoyVals[i]*100) : null,
-    }));
-
-    // simulated 채우기
-    naverData.forEach(d=>{
-      if(d.simulated){
-        const s=dateHash(today+d.name);
-        d.cur=Math.round(50+seeded(s)*40);
-        d.velocity=Math.round((seeded(dateHash(d.name+'v'))-0.4)*60);
-        d.yoyChange=Math.round((seeded(dateHash(d.name+'y'))-0.4)*80);
-      }
-    });
-    const anyReal = naverData.some(d=>!d.simulated);
-
-    // STEP 3
+    // STEP 3: 분석
     setStep(3);
     await new Promise(r=>setTimeout(r,300));
 
-    // 결과 화면 미리 표시
+    // 결과 화면 표시
     document.getElementById('resWrap').style.display='block';
-    const days=Math.round((new Date(pubDate)-new Date(today))/86400000);
-    document.getElementById('resTitle').textContent=`발행 예정 ${days}일 후 · ${pubDate}`;
-    document.getElementById('resMeta').textContent=`Google Trends ${gtData.length}개 · 네이버 ${anyReal?'실데이터':'추정치'} · ${new Date().toLocaleString('ko-KR')}`;
-    document.getElementById('aiMeta').textContent=`발행일 ${pubDate} 기준 역산 예측`;
+    const days = Math.round((new Date(pubDate)-new Date(today))/86400000);
+    document.getElementById('resTitle').textContent = `발행 예정 ${days}일 후 · ${pubDate}`;
+    document.getElementById('resMeta').textContent = `쇼핑인사이트 ${anyShopReal?'실데이터':'추정치'} · ${new Date().toLocaleString('ko-KR')}`;
+    document.getElementById('aiMeta').textContent = `발행일 ${pubDate} 기준 역산 예측`;
 
-    renderGT(gtData);
-    renderNaver(naverData, anyReal);
-    renderYoY(naverData);
-    renderVel(naverData);
+    renderShopItems(shopData, yoyData, anyShopReal);
 
     // STEP 4: Claude 예측
     setStep(4);
-    const top8 = [...naverData].sort((a,b)=>b.cur-a.cur).slice(0,8);
-    const rising4 = [...naverData].filter(d=>d.velocity!==null).sort((a,b)=>b.velocity-a.velocity).slice(0,4);
-    const yoyUp4 = [...naverData].filter(d=>d.yoyChange!==null).sort((a,b)=>b.yoyChange-a.yoyChange).slice(0,4);
 
-    const chMap={ig:'인스타그램 릴스',yt:'유튜브 숏츠',blog:'블로그'};
+    const clothingTop = (shopData['패션의류']||[]).slice(0,10).map(k=>`${k.keyword}(${k.ratio||'-'})`).join(', ');
+    const accessoryTop = (shopData['패션잡화']||[]).slice(0,10).map(k=>`${k.keyword}(${k.ratio||'-'})`).join(', ');
+    const clothingYoy = (yoyData['패션의류']||[]).slice(0,8).map(k=>k.keyword).join(', ');
+    const accessoryYoy = (yoyData['패션잡화']||[]).slice(0,8).map(k=>k.keyword).join(', ');
 
-    const mainPrompt = `당신은 한국 패션 SNS 콘텐츠 전략가입니다.
+    const chMap = {ig:'인스타그램 릴스',yt:'유튜브 숏츠',blog:'블로그'};
 
-## 데이터
+    const prompt = `당신은 한국 패션 SNS 콘텐츠 전략가입니다.
+
+## 실시간 데이터 (네이버 쇼핑인사이트 최근 4주)
+패션의류 인기 검색: ${clothingTop||'데이터 없음'}
+패션잡화 인기 검색: ${accessoryTop||'데이터 없음'}
+
+## 작년 동기 (YoY 비교)
+패션의류 작년: ${clothingYoy||'데이터 없음'}
+패션잡화 작년: ${accessoryYoy||'데이터 없음'}
+
+## 컨텍스트
 오늘: ${today} / 발행 예정일: ${pubDate} (${days}일 후)
-타겟: ${targetCtx||'한국 패션 SNS 팔로워'}
-팀이 발견한 SNS 트렌드 포맷: ${snsFormats||'없음'}
+타겟: ${targetCtx||'한국 패션 SNS 팔로워, 20-30대 여성'}
 채널: ${activeChs.map(c=>chMap[c]).join(', ')}
-
-## Google Trends 실시간 급상승 (${gtData.length}개 수집)
-${gtData.length>0 ? gtData.slice(0,8).map(k=>`${k.keyword}(${k.value||'급상승'})`).join(', ') : '데이터 없음'}
-
-## 네이버 현재 검색량 TOP 8 (${anyReal?'실데이터':'추정치'})
-${top8.map(k=>`${k.name}:${k.cur}${k.simulated?'*':''}`).join(', ')}
-
-## 급상승 TOP 4 (전주 대비)
-${rising4.map(k=>`${k.name}:${k.velocity>0?'+':''}${k.velocity}%`).join(', ')}
-
-## 작년 동기 대비 상승 TOP 4
-${yoyUp4.map(k=>`${k.name}:${k.yoyChange>0?'+':''}${k.yoyChange}%`).join(', ')}
+팀이 발견한 SNS 트렌드 포맷: ${snsFormats||'없음'}
 
 ---
-발행일(${pubDate}) 기준으로 지금 기획해야 할 아이템과 키워드를 예측하세요.
-과거 패턴(작년 대비)과 현재 급상승을 교차 분석해서 근거 있는 예측을 해주세요.
+위 실제 데이터를 기반으로 분석하세요:
+1. 지금 뜨는 것 중 발행일(${pubDate})에 피크칠 아이템은?
+2. 작년 대비 새로 뜨는 것 vs 작년에도 뜬 것 구분
+3. SNS 트렌드 포맷이 있으면 그걸 패션 아이템과 연결한 기획안 제시
 
 JSON만 반환 (마크다운 없이):
 {
   "topPicks":[
-    {"type":"now","keyword":"지금 당장 기획할 아이템","reason":"근거 한 줄","timing":"발행 타이밍"},
-    {"type":"predict","keyword":"발행일에 피크칠 키워드","reason":"근거 한 줄","timing":"피크 예상"},
-    {"type":"avoid","keyword":"지금 피해야 할 것","reason":"이유 한 줄","timing":"이미 피크"}
+    {"type":"now","keyword":"지금 당장 기획할 아이템","reason":"데이터 근거 한 줄","timing":"발행 타이밍"},
+    {"type":"predict","keyword":"발행일 피크 예측 아이템","reason":"YoY+현재 데이터 근거","timing":"피크 예상"},
+    {"type":"avoid","keyword":"지금 피해야 할 것","reason":"하락 근거","timing":"이미 피크"}
   ],
   "channels":{
-    "ig":"## 🔥 지금 올려야 할 키워드 TOP 5\\n- 키워드: 이유\\n\\n## 릴스 기획 TOP 3 (트렌드 포맷 반영)\\n- 제목: 사용할 포맷 / 타이밍\\n\\n## ⚠️ 피해야 할 것\\n- 키워드: 이유",
-    "yt":"## 🔥 기획할 주제 TOP 5\\n- 주제: 이유\\n\\n## 영상 기획 TOP 3\\n- 제목(SEO): 타이밍\\n\\n## ⚠️ 피해야 할 것",
-    "blog":"## 🔥 SEO 키워드 TOP 5\\n- 키워드: 트렌드 근거\\n\\n## 포스팅 기획 TOP 3\\n- 제목: 구조\\n\\n## ⚠️ 피해야 할 것"
+    "ig":"### 🔥 지금 올려야 할 아이템 TOP 5\\n- 아이템: 이유 (데이터 근거)\\n\\n### 릴스 기획 TOP 3\\n- 제목/포맷: 타이밍\\n\\n### ⚠️ 지금 피해야 할 것\\n- 아이템: 이유",
+    "yt":"### 🔥 기획할 주제 TOP 5\\n- 주제: 이유\\n\\n### 영상 기획 TOP 3\\n- 제목(SEO키워드 포함): 타이밍\\n\\n### ⚠️ 피해야 할 것",
+    "blog":"### 🔥 SEO 아이템 키워드 TOP 5\\n- 키워드: 검색량 근거\\n\\n### 포스팅 기획 TOP 3\\n- 제목: 구조/타이밍\\n\\n### ⚠️ 피해야 할 것"
   }
 }
-비활성 채널(${Object.keys(chs).filter(c=>!chs[c]).join(',')})은 빈 문자열로.`;
+비활성 채널은 빈 문자열로.`;
 
-    const aiRes = await callClaude(claudeApiKey, mainPrompt);
+    const aiRes = await callClaude(claudeApiKey, prompt);
 
     // STEP 5
     setStep(5);
@@ -533,103 +441,63 @@ JSON만 반환 (마크다운 없이):
   } catch(e) {
     showErr(`오류: ${e.message}`);
   } finally {
-    document.getElementById('runBtn').disabled=false;
-    document.getElementById('runBtn').querySelector('span:last-child').textContent='트렌드 예측 시작';
+    runBtn.disabled=false;
+    runBtn.querySelector('span:last-child').textContent='트렌드 예측 시작';
   }
 }
 
-// ── 렌더링 ──────────────────────────────────────────────
-function renderBars(containerId, items, barClass, valFn, tagFn){
-  const max = Math.max(...items.map(d=>Math.abs(d.val||0)),1);
-  document.getElementById(containerId).innerHTML = items.map(d=>`
-    <div class="kw-row">
-      <div class="kw-name">${d.name}${d.sim?'<span style="font-size:8px;color:var(--ink3)"> *</span>':''}</div>
-      <div class="bar-bg"><div class="bar-fill ${barClass}" style="width:${(Math.abs(d.val||0)/max*100).toFixed(1)}%"></div></div>
-      <div class="kw-val">${valFn(d)}</div>
-      ${tagFn(d)}
-    </div>`).join('');
-}
+// ── 렌더링 ──────────────────────────────────────────────────
+function renderShopItems(shopData, yoyData, anyReal) {
+  const yoyClothingSet = new Set((yoyData['패션의류']||[]).map(k=>k.keyword));
+  const yoyAccessorySet = new Set((yoyData['패션잡화']||[]).map(k=>k.keyword));
 
-function renderGT(data){
-  if(!data.length){
-    document.getElementById('gtBars').innerHTML='<div style="font-size:11px;color:var(--ink3)">데이터 수집 중...</div>';
-    const n=document.getElementById('gtNotice'); n.style.display='block';
-    n.innerHTML='Google Trends 연결 중. 네이버 데이터로 대체 분석해요.'; return;
+  function renderCategory(items, yoySet, containerId) {
+    if(!items.length) {
+      document.getElementById(containerId).innerHTML = '<div style="font-size:11px;color:var(--ink3);grid-column:1/-1">네이버 API 키를 설정하면 실시간 데이터가 나와요</div>';
+      return;
+    }
+    document.getElementById(containerId).innerHTML = items.slice(0,12).map((item,i)=>{
+      const isNew = !yoySet.has(item.keyword);
+      const tagHtml = i<3 ? '<span class="item-tag tag-hot">HOT</span>'
+                    : isNew ? '<span class="item-tag tag-new">NEW↑</span>'
+                    : '<span class="item-tag tag-up">↑</span>';
+      const cls = i<3?'hot':isNew?'rising':'';
+      return `<div class="item-card ${cls}">
+        <div class="item-rank">#${i+1}</div>
+        <div class="item-name">${item.keyword}</div>
+        <div class="item-val">${item.ratio?`관심도 ${item.ratio}`:''}</div>
+        ${tagHtml}
+      </div>`;
+    }).join('');
   }
-  const max=Math.max(...data.map(d=>d.value||50),1);
-  document.getElementById('gtBars').innerHTML = data.slice(0,8).map(d=>`
-    <div class="kw-row">
-      <div class="kw-name">${d.keyword}</div>
-      <div class="bar-bg"><div class="bar-fill bar-blue" style="width:${((d.value||50)/max*100).toFixed(1)}%"></div></div>
-      <div class="kw-val">${d.value||'-'}</div>
-      <span class="kw-tag tag-up">↑</span>
-    </div>`).join('');
-}
 
-function renderNaver(data, anyReal){
-  const sorted=[...data].sort((a,b)=>b.cur-a.cur).slice(0,8);
-  const max=Math.max(...sorted.map(d=>d.cur),1);
-  document.getElementById('naverBars').innerHTML = sorted.map(d=>{
-    const tag = d.velocity>=20?'<span class="kw-tag tag-hot">HOT↑</span>'
-              : d.velocity>=8?'<span class="kw-tag tag-up">↑</span>'
-              : d.velocity<=-10?'<span class="kw-tag tag-down">↓</span>':'';
-    return `<div class="kw-row">
-      <div class="kw-name">${d.name}${d.simulated?'<span style="font-size:8px;color:var(--ink3)"> *</span>':''}</div>
-      <div class="bar-bg"><div class="bar-fill bar-green" style="width:${(d.cur/max*100).toFixed(1)}%"></div></div>
-      <div class="kw-val">${d.cur}</div>${tag}</div>`;
-  }).join('');
-  if(!anyReal){
-    const n=document.getElementById('naverNotice'); n.style.display='block';
-    n.innerHTML='* CORS 제한으로 추정치 <a href="https://datalab.naver.com" target="_blank">→ DataLab 직접 확인</a>';
+  renderCategory(shopData['패션의류']||[], yoyClothingSet, 'clothingItems');
+  renderCategory(shopData['패션잡화']||[], yoyAccessorySet, 'accessoryItems');
+
+  if(!anyReal) {
+    const n=document.getElementById('shopNotice'); n.style.display='block';
+    n.innerHTML='네이버 API 키 설정 시 실시간 쇼핑인사이트 데이터가 연결돼요 <a href="https://datalab.naver.com/shoppingInsight/sCategory.naver" target="_blank">→ DataLab 직접 확인</a>';
   }
 }
 
-function renderYoY(data){
-  const sorted=[...data].filter(d=>d.yoyChange!==null).sort((a,b)=>b.yoyChange-a.yoyChange).slice(0,8);
-  const max=Math.max(...sorted.map(d=>Math.abs(d.yoyChange)),1);
-  document.getElementById('yoyBars').innerHTML = sorted.map(d=>{
-    const pos=d.yoyChange>=0;
-    return `<div class="kw-row">
-      <div class="kw-name">${d.name}</div>
-      <div class="bar-bg"><div class="bar-fill ${pos?'bar-green':'bar-amber'}" style="width:${(Math.abs(d.yoyChange)/max*100).toFixed(1)}%"></div></div>
-      <div class="kw-val" style="color:${pos?'var(--green)':'var(--red)'}">${pos?'+':''}${d.yoyChange}%</div>
-    </div>`;
-  }).join('');
-}
-
-function renderVel(data){
-  const sorted=[...data].filter(d=>d.velocity!==null).sort((a,b)=>b.velocity-a.velocity).slice(0,8);
-  const max=Math.max(...sorted.map(d=>Math.abs(d.velocity)),1);
-  document.getElementById('velBars').innerHTML = sorted.map(d=>{
-    const pos=d.velocity>=0;
-    return `<div class="kw-row">
-      <div class="kw-name">${d.name}</div>
-      <div class="bar-bg"><div class="bar-fill ${pos?'bar-purple':'bar-amber'}" style="width:${(Math.abs(d.velocity)/max*100).toFixed(1)}%"></div></div>
-      <div class="kw-val" style="color:${pos?'var(--purple)':'var(--red)'}">${pos?'+':''}${d.velocity}%</div>
-    </div>`;
-  }).join('');
-}
-
-function renderPicks(picks){
-  const map={now:{lbl:'🔥 지금 기획할 아이템',cls:'fire',lcls:'fire'},predict:{lbl:'🔮 발행일 피크 예측',cls:'predict',lcls:'predict'},avoid:{lbl:'⚠️ 피해야 할 것',cls:'avoid',lcls:''}};
+function renderPicks(picks) {
+  const map={now:{lbl:'🔥 지금 기획할 아이템',cls:'fire',lcls:'fire'},predict:{lbl:'🔮 발행일 피크 예측',cls:'predict',lcls:'predict'},avoid:{lbl:'⚠️ 지금 피해야 할 것',cls:'avoid',lcls:''}};
   document.getElementById('topPicks').innerHTML = picks.map(p=>{
     const t=map[p.type]||map.now;
     return `<div class="pick ${t.cls}"><div class="pick-lbl ${t.lcls}">${t.lbl}</div><div class="pick-kw">${p.keyword}</div><div class="pick-desc">${p.reason}</div><div class="pick-timing">${p.timing}</div></div>`;
   }).join('');
 }
 
-function renderMD(text){
+function renderMD(text) {
   return text
-    .replace(/^#{1,3} (.+)/gm,'<h3>$1</h3>')
+    .replace(/^#{2,3} (.+)/gm,'<h3>$1</h3>')
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/🔥HOT/g,'<span class="hot">🔥 HOT</span>')
-    .replace(/📈RISING/g,'<span class="rising">📈 RISING</span>')
     .replace(/^[-•] (.+)/gm,'<li>$1</li>')
     .replace(/(<li>[\s\S]*?<\/li>\n?)+/g,m=>`<ul>${m}</ul>`)
     .replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
 }
 
-function renderChannels(channels, activeChs){
+function renderChannels(channels, activeChs) {
   const cfg={ig:{lbl:'📷 인스타그램 릴스',col:'#e1306c'},yt:{lbl:'▶ 유튜브 숏츠',col:'#cc0000'},blog:{lbl:'✍ 블로그',col:'#2563eb'}};
   document.getElementById('chCards').innerHTML = activeChs.map(ch=>{
     const c=cfg[ch]; const text=channels[ch]||'';
