@@ -323,6 +323,23 @@ async function run() {
     const data = await res.json();
     if (data.error) throw new Error(data.error);
 
+    // raw 텍스트에서 JSON 추출
+    let parsed;
+    if (data.raw) {
+      const raw = data.raw;
+      const jsonBlock = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
+      const braceBlock = raw.match(/\{[\s\S]*\}/);
+      const candidate = jsonBlock ? jsonBlock[1].trim() : braceBlock ? braceBlock[0] : null;
+      if (!candidate) throw new Error('AI 응답 파싱 실패');
+      try {
+        parsed = JSON.parse(candidate);
+      } catch(e) {
+        const fixed = candidate.replace(/,\s*([}\]])/g, '$1').replace(/[\x00-\x1F\x7F]/g, ' ');
+        parsed = JSON.parse(fixed);
+      }
+      Object.assign(data, parsed);
+    }
+
     setStep(5);
     setTimeout(() => {
       document.getElementById('ps5').classList.add('done');
