@@ -10,20 +10,26 @@ exports.handler = async (event) => {
   try {
     const { clientId, clientSecret, startDate, endDate, timeUnit, category } = JSON.parse(event.body);
 
-    // 네이버 쇼핑인사이트 카테고리별 인기 키워드
-    // 공식 문서: https://developers.naver.com/docs/serviceapi/datalab/shopping/guide.md
-    // category 파라미터: 숫자 코드 (50000167=패션의류, 50000172=패션잡화)
+    // 네이버 쇼핑인사이트 카테고리별 인기 키워드 API
+    // category 파라미터: { name, param: [catId] } 배열 형식으로 넘겨야 함
+    const catName = category === '50000167' ? '패션의류' : '패션잡화';
+
     const reqBody = JSON.stringify({
-      startDate,       // "2026-05-01"
-      endDate,         // "2026-06-01"
+      startDate,
+      endDate,
       timeUnit: timeUnit || 'week',
-      category: String(category),  // 문자열로 변환
+      category: [
+        {
+          name: catName,
+          param: [String(category)]
+        }
+      ],
       device: '',
       gender: '',
       ages: []
     });
 
-    console.log('Request body:', reqBody);
+    console.log('Request:', reqBody);
 
     const response = await fetch('https://openapi.naver.com/v1/datalab/shopping/category/keywords', {
       method: 'POST',
@@ -36,13 +42,11 @@ exports.handler = async (event) => {
     });
 
     const text = await response.text();
-    console.log('Response status:', response.status);
-    console.log('Response body:', text.slice(0, 500));
+    console.log('Status:', response.status, 'Body:', text.slice(0, 500));
 
     let data;
-    try {
-      data = JSON.parse(text);
-    } catch (e) {
+    try { data = JSON.parse(text); }
+    catch (e) {
       return {
         statusCode: 500,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
@@ -50,7 +54,6 @@ exports.handler = async (event) => {
       };
     }
 
-    // 에러 응답 처리
     if (!response.ok || data.errorCode || data.errorMessage) {
       return {
         statusCode: response.status,
@@ -63,16 +66,27 @@ exports.handler = async (event) => {
       };
     }
 
-    // 응답 구조: { results: [{ keyword, period, ratio }] }
-    // 같은 keyword가 여러 period로 반복됨 → 평균 ratio로 집계
-    const results = data.results || [];
-    const keywordMap = {};
+    // 응답: { results: [{ title, keywords: [{ keyword, period, ratio }] }] }
+    // 또는: { results: [{ keyword, period, ratio }] }
+    // 두 형식 모두 처리
+    let allKeywords = [];
 
-    for (const item of results) {
-      if (!keywordMap[item.keyword]) {
-        keywordMap[item.keyword] = { sum: 0, count: 0 };
+    if (data.results && data.results[0]) {
+      const first = data.results[0];
+      if (first.keywords) {
+        // 배열 형식
+        allKeywords = first.keywords;
+      } else if (first.keyword) {
+        // 평탄화 형식
+        allKeywords = data.results;
       }
-      keywordMap[item.keyword].sum += item.ratio;
+    }
+
+    // 키워드별 평균 관심도 계산
+    const keywordMap = {};
+    for (const item of allKeywords) {
+      if (!keywordMap[item.keyword]) keywordMap[item.keyword] = { sum: 0, count: 0 };
+      keywordMap[item.keyword].sum += (item.ratio || 0);
       keywordMap[item.keyword].count += 1;
     }
 
@@ -84,7 +98,7 @@ exports.handler = async (event) => {
       .sort((a, b) => parseFloat(b.ratio) - parseFloat(a.ratio))
       .slice(0, 20);
 
-    console.log('Keywords found:', keywords.length);
+    console.log('Keywords found:', keywords.length, keywords.slice(0,3));
 
     return {
       statusCode: 200,
