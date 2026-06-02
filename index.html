@@ -3,876 +3,641 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>패션 트렌드 예측 툴</title>
+<title>패션 트렌드 예측</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap');
-
 :root {
-  --bg: #f5f4f0; --bg2: #eceae5; --bg3: #e2e0da;
-  --white: #ffffff; --ink: #1a1814; --ink2: #4a4840; --ink3: #9a9890;
-  --accent: #c8502a; --ig: #e1306c; --yt: #cc0000; --naver: #03c75a;
-  --border: rgba(26,24,20,0.09); --shadow: 0 2px 16px rgba(26,24,20,0.07);
-  --predict: #7c3aed; --predict-bg: rgba(124,58,237,0.07);
+  --bg:#f5f4f0;--bg2:#eceae5;--bg3:#e2e0da;--white:#fff;--ink:#1a1814;--ink2:#4a4840;--ink3:#9a9890;
+  --accent:#c8502a;--border:rgba(26,24,20,0.09);--shadow:0 2px 16px rgba(26,24,20,0.07);
+  --purple:#7c3aed;--purple-bg:rgba(124,58,237,0.07);--green:#16a34a;--red:#dc2626;--amber:#b45309;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+.header{background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;}
+.logo{font-weight:900;font-size:14px;letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;}
+.logo-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;}
+.hbadges{display:flex;gap:5px;}
+.hbadge{font-size:9px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:3px;border:1px solid var(--border);color:var(--ink3);}
+.hbadge.live{border-color:var(--green);color:var(--green);background:rgba(22,163,74,0.06);}
 
-.header {
-  background: var(--white); border-bottom: 1px solid var(--border);
-  padding: 0 32px; display: flex; align-items: center; justify-content: space-between;
-  height: 56px; position: sticky; top: 0; z-index: 100;
-}
-.logo { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 15px; letter-spacing: -0.02em; }
-.logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
-.logo-sub { font-size: 10px; font-weight: 500; color: var(--ink3); font-family: 'DM Mono', monospace; letter-spacing: 0.05em; }
-.header-badges { display: flex; gap: 6px; }
-.hbadge { font-size: 10px; font-family: 'DM Mono', monospace; padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border); color: var(--ink3); background: var(--bg); }
-.hbadge.predict { border-color: var(--predict); color: var(--predict); background: var(--predict-bg); }
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 52px);}
+.sidebar{background:var(--white);border-right:1px solid var(--border);padding:20px 18px;display:flex;flex-direction:column;gap:16px;height:calc(100vh - 52px);overflow-y:auto;position:sticky;top:52px;}
+.slabel{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+.slabel::after{content:'';flex:1;height:1px;background:var(--border);}
+.finput{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 11px;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:var(--ink);outline:none;width:100%;}
+.finput:focus{border-color:var(--accent);}
+.flabel{font-size:11px;font-weight:600;color:var(--ink2);margin-bottom:4px;}
+.fgroup{display:flex;flex-direction:column;gap:4px;margin-bottom:6px;}
+.fhint{font-size:10px;color:var(--ink3);line-height:1.5;}
 
-.layout { display: grid; grid-template-columns: 300px 1fr; min-height: calc(100vh - 56px); }
-@media(max-width:800px) { .layout { grid-template-columns: 1fr; } }
+.pub-box{background:var(--purple-bg);border:1.5px solid rgba(124,58,237,0.2);border-radius:9px;padding:10px 12px;}
+.pub-label{font-size:11px;font-weight:700;color:var(--purple);margin-bottom:6px;}
 
-.sidebar {
-  background: var(--white); border-right: 1px solid var(--border);
-  padding: 24px 20px; display: flex; flex-direction: column; gap: 18px;
-  height: calc(100vh - 56px); overflow-y: auto; position: sticky; top: 56px;
-}
+.ch-row{display:flex;gap:6px;flex-wrap:wrap;}
+.ch-btn{flex:1;min-width:70px;padding:7px 8px;border-radius:7px;border:1.5px solid var(--border);background:var(--bg);font-size:11px;font-weight:600;font-family:'Noto Sans KR',sans-serif;cursor:pointer;text-align:center;transition:all .15s;color:var(--ink2);}
+.ch-btn.on-ig{border-color:#e1306c;background:rgba(225,48,108,0.07);color:#e1306c;}
+.ch-btn.on-yt{border-color:#cc0000;background:rgba(204,0,0,0.07);color:#cc0000;}
+.ch-btn.on-blog{border-color:#2563eb;background:rgba(37,99,235,0.07);color:#2563eb;}
 
-.section-label {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--ink3); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
-}
-.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.key-row{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--ink3);cursor:pointer;padding:3px 0;}
+.key-body{overflow:hidden;max-height:0;transition:max-height .3s;}
+.key-body.open{max-height:300px;padding-top:8px;}
+.save-btn{margin-top:8px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 
-.form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; }
-.form-label { font-size: 11.5px; font-weight: 600; color: var(--ink2); }
-.form-input {
-  background: var(--bg); border: 1px solid var(--border); border-radius: 7px;
-  padding: 9px 12px; font-size: 12.5px; font-family: 'Noto Sans KR', sans-serif;
-  color: var(--ink); outline: none; transition: border-color 0.2s; width: 100%;
-}
-.form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(200,80,42,0.1); }
-.form-input[type="password"] { font-family: 'DM Mono', monospace; font-size: 11px; }
-.form-hint { font-size: 10.5px; color: var(--ink3); line-height: 1.5; }
+.run-btn{width:100%;background:var(--purple);color:#fff;border:none;border-radius:9px;padding:13px;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;}
+.run-btn:hover:not(:disabled){background:#6d28d9;transform:translateY(-1px);}
+.run-btn:disabled{opacity:.4;cursor:not-allowed;}
 
-.predict-window {
-  background: var(--predict-bg); border: 1.5px solid rgba(124,58,237,0.2);
-  border-radius: 9px; padding: 10px 12px;
-}
-.predict-window .form-label { color: var(--predict); }
-.predict-select {
-  background: var(--white); border: 1.5px solid rgba(124,58,237,0.25); border-radius: 7px;
-  padding: 8px 12px; font-size: 12.5px; font-family: 'Noto Sans KR', sans-serif;
-  color: var(--ink); outline: none; width: 100%; cursor: pointer;
-}
-.predict-select:focus { border-color: var(--predict); }
+.main{padding:24px 24px 60px;overflow-y:auto;}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:420px;text-align:center;gap:10px;}
+.empty-ico{font-size:48px;opacity:.15;}
+.empty-title{font-size:18px;font-weight:900;letter-spacing:-.02em;color:var(--ink2);}
+.empty-desc{font-size:12.5px;color:var(--ink3);line-height:1.65;max-width:320px;}
 
-.ch-grid { display: flex; flex-direction: column; gap: 6px; }
-.ch-toggle {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 12px; border-radius: 8px; border: 1.5px solid var(--border);
-  background: var(--bg); cursor: pointer; transition: all 0.18s;
-}
-.ch-toggle.on-ig { border-color: var(--ig); background: rgba(225,48,108,0.06); }
-.ch-toggle.on-yt { border-color: var(--yt); background: rgba(204,0,0,0.06); }
-.ch-toggle.on-blog { border-color: #2563eb; background: rgba(37,99,235,0.06); }
-.ch-left { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; }
-.ch-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
-.on-ig .ch-dot { background: var(--ig); }
-.on-yt .ch-dot { background: var(--yt); }
-.on-blog .ch-dot { background: #2563eb; }
-.ch-status { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--ink3); }
+/* Progress */
+.prog-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px;display:none;}
+.prog-card.show{display:block;}
+.prog-steps{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+.pstep{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink3);}
+.pstep.done{color:var(--ink);}
+.pstep.active{color:var(--purple);font-weight:600;}
+.pico{width:24px;height:24px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+.pstep.done .pico{background:#22c55e;color:#fff;}
+.pstep.active .pico{background:var(--purple);color:#fff;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-.run-btn {
-  width: 100%; background: var(--predict); color: white; border: none; border-radius: 9px;
-  padding: 13px; font-size: 13px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif;
-  cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 7px;
-}
-.run-btn:hover:not(:disabled) { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 4px 18px rgba(124,58,237,0.3); }
-.run-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-
-.key-toggle { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: var(--ink3); cursor: pointer; padding: 4px 0; }
-.key-toggle .arr { font-size: 9px; transition: transform 0.2s; }
-.key-toggle.open .arr { transform: rotate(180deg); }
-.key-section { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-.key-section.open { max-height: 500px; padding-top: 10px; }
-.key-saved { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; display: inline-block; opacity: 0; transition: opacity 0.3s; margin-left: 4px; }
-.key-saved.show { opacity: 1; }
-.save-btn { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; font-size: 11px; font-weight: 600; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; color: var(--ink2); transition: all 0.15s; margin-top: 8px; }
-.save-btn:hover { background: var(--bg3); }
-
-/* Main */
-.main-content { padding: 28px 28px 60px; overflow-y: auto; }
-
-.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; gap: 12px; }
-.empty-icon { font-size: 44px; opacity: 0.2; }
-.empty-title { font-size: 18px; font-weight: 900; letter-spacing: -0.02em; color: var(--ink2); }
-.empty-desc { font-size: 13px; color: var(--ink3); line-height: 1.6; max-width: 340px; }
-.empty-tag { display: inline-flex; align-items: center; gap: 5px; background: var(--predict-bg); border: 1px solid rgba(124,58,237,0.2); color: var(--predict); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
-
-.progress-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 24px; display: none; }
-.progress-card.show { display: block; }
-.prog-steps { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
-.prog-step { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--ink3); }
-.prog-step.done { color: var(--ink); }
-.prog-step.active { color: var(--predict); font-weight: 600; }
-.prog-ico { width: 26px; height: 26px; border-radius: 50%; background: var(--bg2); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
-.prog-step.done .prog-ico { background: #22c55e; color: white; }
-.prog-step.active .prog-ico { background: var(--predict); color: white; animation: spin 1s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Result header */
-.result-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; gap: 12px; flex-wrap: wrap; }
-.result-title { font-size: 20px; font-weight: 900; letter-spacing: -0.03em; }
-.result-meta { font-size: 10.5px; color: var(--ink3); font-family: 'DM Mono', monospace; margin-top: 3px; }
-.new-btn { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; color: var(--ink2); white-space: nowrap; }
-
-/* Signal row */
-.signal-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-@media(max-width:700px) { .signal-row { grid-template-columns: 1fr; } }
-
-.signal-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
-.signal-head { padding: 12px 16px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
-.signal-badge { font-size: 9px; font-family: 'DM Mono', monospace; padding: 2px 7px; border-radius: 3px; font-weight: 600; }
-.badge-naver { background: rgba(3,199,90,0.1); color: #059444; border: 1px solid rgba(3,199,90,0.2); }
-.badge-overseas { background: var(--predict-bg); color: var(--predict); border: 1px solid rgba(124,58,237,0.2); }
-.badge-velocity { background: rgba(200,80,42,0.08); color: var(--accent); border: 1px solid rgba(200,80,42,0.2); }
-.signal-title { font-size: 12px; font-weight: 700; }
-.signal-body { padding: 12px 16px 14px; }
-
-/* Keyword bars */
-.kw-bars { display: flex; flex-direction: column; gap: 8px; }
-.kw-row { display: flex; align-items: center; gap: 8px; }
-.kw-name { font-size: 11px; font-weight: 600; width: 80px; flex-shrink: 0; color: var(--ink2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bar-bg { flex: 1; height: 4px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 2px; transition: width 1s cubic-bezier(.22,1,.36,1); }
-.bar-naver { background: linear-gradient(90deg, var(--naver), #06e868); }
-.bar-vel { background: linear-gradient(90deg, var(--accent), #f97316); }
-.bar-predict { background: linear-gradient(90deg, var(--predict), #a855f7); }
-.kw-val { font-size: 9px; font-family: 'DM Mono', monospace; color: var(--ink3); width: 28px; text-align: right; flex-shrink: 0; }
-.kw-tag { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; flex-shrink: 0; }
-.tag-hot { background: rgba(239,68,68,0.1); color: #dc2626; }
-.tag-rising { background: rgba(34,197,94,0.1); color: #16a34a; }
-.tag-watch { background: rgba(234,179,8,0.1); color: #b45309; }
-
-/* Overseas signals */
-.overseas-items { display: flex; flex-direction: column; gap: 7px; }
-.overseas-item { padding: 8px 10px; background: var(--bg); border-radius: 7px; border-left: 2px solid var(--predict); }
-.overseas-kw { font-size: 11.5px; font-weight: 700; color: var(--ink); }
-.overseas-meta { font-size: 10px; color: var(--ink3); margin-top: 2px; font-family: 'DM Mono', monospace; }
-.overseas-reason { font-size: 10.5px; color: var(--ink2); margin-top: 3px; line-height: 1.4; }
-
-/* Predict section - full width */
-.predict-section { background: var(--white); border: 1.5px solid rgba(124,58,237,0.2); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); margin-bottom: 16px; }
-.predict-section-head { padding: 16px 20px 14px; border-bottom: 1px solid rgba(124,58,237,0.12); background: var(--predict-bg); display: flex; align-items: center; gap: 10px; }
-.predict-section-title { font-size: 14px; font-weight: 800; color: var(--predict); letter-spacing: -0.01em; }
-.predict-section-body { padding: 20px; }
-
-/* Channel cards */
-.ch-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-@media(max-width:700px) { .ch-cards { grid-template-columns: 1fr; } }
-.ch-card { border: 1px solid var(--border); border-radius: 11px; overflow: hidden; }
-.ch-card-head { padding: 11px 14px 9px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
-.ch-card-body { padding: 12px 14px 14px; }
-.ch-label-ig { color: var(--ig); font-size: 13px; font-weight: 800; }
-.ch-label-yt { color: var(--yt); font-size: 13px; font-weight: 800; }
-.ch-label-blog { color: #2563eb; font-size: 13px; font-weight: 800; }
-.ai-out { font-size: 12px; line-height: 1.75; color: var(--ink2); }
-.ai-out h3 { font-size: 11.5px; font-weight: 800; color: var(--ink); margin: 12px 0 6px; }
-.ai-out h3:first-child { margin-top: 0; }
-.ai-out ul { padding-left: 14px; }
-.ai-out li { margin-bottom: 4px; }
-.ai-out strong { color: var(--ink); }
-.ai-out .kt { display: inline-block; background: var(--bg2); border-radius: 3px; padding: 0 5px; font-size: 10px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--ink2); margin: 0 1px; }
-.ai-out .timing { display: inline-block; background: var(--predict-bg); border-radius: 3px; padding: 1px 6px; font-size: 10px; font-weight: 700; color: var(--predict); margin: 0 2px; }
-.ai-out .hot { color: #dc2626; font-weight: 700; }
-.ai-out .rising { color: #16a34a; font-weight: 700; }
-.ai-out .watch { color: #b45309; font-weight: 700; }
-.ai-out .avoid { color: var(--ink3); text-decoration: line-through; }
+/* Result */
+.res-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
+.res-title{font-size:19px;font-weight:900;letter-spacing:-.03em;}
+.res-meta{font-size:10px;color:var(--ink3);font-family:'DM Mono',monospace;margin-top:3px;}
+.new-btn{background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;}
 
 /* Top picks */
-.top-picks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-@media(max-width:600px) { .top-picks { grid-template-columns: 1fr; } }
-.pick-card { background: var(--white); border-radius: 11px; padding: 14px 16px; border: 1px solid var(--border); box-shadow: var(--shadow); }
-.pick-card.hot-pick { border-color: rgba(200,80,42,0.3); background: rgba(200,80,42,0.03); }
-.pick-card.predict-pick { border-color: rgba(124,58,237,0.3); background: var(--predict-bg); }
-.pick-label { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink3); margin-bottom: 5px; }
-.pick-label.fire { color: var(--accent); }
-.pick-label.star { color: var(--predict); }
-.pick-keyword { font-size: 18px; font-weight: 900; letter-spacing: -0.03em; color: var(--ink); line-height: 1.2; }
-.pick-desc { font-size: 11px; color: var(--ink3); margin-top: 5px; line-height: 1.5; }
-.pick-timing { font-size: 10px; font-family: 'DM Mono', monospace; font-weight: 600; color: var(--predict); margin-top: 6px; }
+.picks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.pick{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 15px;box-shadow:var(--shadow);}
+.pick.fire{border-color:rgba(200,80,42,.3);background:rgba(200,80,42,.03);}
+.pick.predict{border-color:rgba(124,58,237,.3);background:var(--purple-bg);}
+.pick.avoid{border-color:rgba(156,163,175,.3);background:rgba(156,163,175,.04);}
+.pick-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:5px;}
+.pick-lbl.fire{color:var(--accent);}
+.pick-lbl.predict{color:var(--purple);}
+.pick-kw{font-size:17px;font-weight:900;letter-spacing:-.02em;line-height:1.2;}
+.pick-desc{font-size:11px;color:var(--ink3);margin-top:4px;line-height:1.5;}
+.pick-timing{font-size:9.5px;font-family:'DM Mono',monospace;font-weight:600;color:var(--purple);margin-top:5px;}
 
-.err { background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.18); border-radius: 10px; padding: 13px 16px; font-size: 12.5px; color: #dc2626; display: none; margin-bottom: 16px; }
-.err.show { display: block; }
-.notice { font-size: 10.5px; color: var(--ink3); padding: 9px 12px; background: var(--bg2); border-radius: 7px; line-height: 1.5; margin-top: 8px; }
-.notice a { color: var(--accent); text-decoration: none; }
+/* Signal grid */
+.sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.sig-card{background:var(--white);border:1px solid var(--border);border-radius:11px;overflow:hidden;box-shadow:var(--shadow);}
+.sig-head{padding:11px 15px 9px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;}
+.sig-badge{font-size:9px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:3px;font-weight:600;}
+.badge-live{background:rgba(22,163,74,.1);color:#059444;border:1px solid rgba(22,163,74,.2);}
+.badge-trend{background:rgba(37,99,235,.08);color:#1d4ed8;border:1px solid rgba(37,99,235,.2);}
+.badge-naver{background:rgba(3,199,90,.1);color:#059444;border:1px solid rgba(3,199,90,.2);}
+.badge-pattern{background:rgba(180,83,9,.1);color:var(--amber);border:1px solid rgba(180,83,9,.2);}
+.sig-title{font-size:12px;font-weight:700;}
+.sig-body{padding:12px 15px 14px;}
 
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 2px; }
+.kw-bars{display:flex;flex-direction:column;gap:7px;}
+.kw-row{display:flex;align-items:center;gap:7px;}
+.kw-name{font-size:11px;font-weight:600;width:90px;flex-shrink:0;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-bg{flex:1;height:4px;background:var(--bg2);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;transition:width 1s cubic-bezier(.22,1,.36,1);}
+.bar-green{background:linear-gradient(90deg,#16a34a,#4ade80);}
+.bar-blue{background:linear-gradient(90deg,#2563eb,#60a5fa);}
+.bar-amber{background:linear-gradient(90deg,#b45309,#fbbf24);}
+.bar-purple{background:linear-gradient(90deg,#7c3aed,#a855f7);}
+.kw-val{font-size:9px;font-family:'DM Mono',monospace;color:var(--ink3);width:32px;text-align:right;flex-shrink:0;}
+.kw-tag{font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;flex-shrink:0;}
+.tag-up{background:rgba(22,163,74,.1);color:#16a34a;}
+.tag-hot{background:rgba(220,38,38,.1);color:#dc2626;}
+.tag-down{background:rgba(156,163,175,.1);color:#9ca3af;}
+
+/* Trend items */
+.trend-items{display:flex;flex-direction:column;gap:6px;}
+.trend-item{padding:7px 10px;background:var(--bg);border-radius:7px;border-left:2px solid var(--purple);}
+.trend-kw{font-size:11.5px;font-weight:700;}
+.trend-meta{font-size:9.5px;color:var(--ink3);margin-top:2px;font-family:'DM Mono',monospace;}
+.trend-reason{font-size:10.5px;color:var(--ink2);margin-top:3px;line-height:1.4;}
+
+/* AI section */
+.ai-section{background:var(--white);border:1.5px solid rgba(124,58,237,.2);border-radius:13px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:16px;}
+.ai-head{padding:14px 18px 12px;border-bottom:1px solid rgba(124,58,237,.12);background:var(--purple-bg);display:flex;align-items:center;gap:9px;}
+.ai-title{font-size:13px;font-weight:800;color:var(--purple);}
+.ai-body{padding:18px;}
+.ch-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.ch-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.ch-head{padding:10px 13px 8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;}
+.ch-body{padding:11px 13px 13px;}
+.ai-out{font-size:11.5px;line-height:1.75;color:var(--ink2);}
+.ai-out h3{font-size:11px;font-weight:800;color:var(--ink);margin:10px 0 5px;}
+.ai-out h3:first-child{margin-top:0;}
+.ai-out ul{padding-left:13px;}
+.ai-out li{margin-bottom:3px;}
+.ai-out strong{color:var(--ink);}
+.ai-out .hot{color:#dc2626;font-weight:700;}
+.ai-out .rising{color:#16a34a;font-weight:700;}
+.ai-out .watch{color:#b45309;font-weight:700;}
+
+.err{background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.18);border-radius:9px;padding:12px 15px;font-size:12px;color:#dc2626;display:none;margin-bottom:14px;}
+.err.show{display:block;}
+.notice{font-size:10px;color:var(--ink3);padding:8px 11px;background:var(--bg2);border-radius:6px;line-height:1.5;margin-top:7px;}
+.notice a{color:var(--accent);}
 </style>
 </head>
 <body>
-
 <div class="header">
-  <div class="logo">
-    <div class="logo-dot"></div>
-    패션 트렌드 예측
-    <span class="logo-sub">PREDICTION ENGINE</span>
-  </div>
-  <div class="header-badges">
-    <span class="hbadge">NAVER DataLab</span>
-    <span class="hbadge predict">AI 예측</span>
+  <div class="logo"><div class="logo-dot"></div>패션 트렌드 예측</div>
+  <div class="hbadges">
+    <span class="hbadge live">Google Trends 실시간</span>
+    <span class="hbadge live">Naver DataLab</span>
     <span class="hbadge">Claude AI</span>
   </div>
 </div>
 
 <div class="layout">
   <div class="sidebar">
-
-    <!-- 발행 예정일 -->
     <div>
-      <div class="section-label">발행 예정일</div>
-      <div class="predict-window">
-        <div class="form-label" style="margin-bottom:6px">📅 언제 발행할 콘텐츠인가요?</div>
-        <input type="date" class="form-input" id="publishDate">
-        <div class="form-hint" style="margin-top:5px">발행일 기준으로 역산해서 지금 잡아야 할 키워드를 예측해요</div>
+      <div class="slabel">발행 예정일</div>
+      <div class="pub-box">
+        <div class="pub-label">📅 언제 발행할 콘텐츠인가요?</div>
+        <input type="date" class="finput" id="pubDate">
+        <div class="fhint" style="margin-top:5px">발행일 역산으로 지금 기획해야 할 키워드를 예측해요</div>
       </div>
     </div>
 
-    <!-- 분석 채널 -->
     <div>
-      <div class="section-label">발행 채널</div>
-      <div class="ch-grid">
-        <div class="ch-toggle on-ig" id="tog-ig" onclick="toggleChannel('ig')">
-          <div class="ch-left"><div class="ch-dot"></div>📷 인스타그램</div>
-          <div class="ch-status">릴스</div>
-        </div>
-        <div class="ch-toggle on-yt" id="tog-yt" onclick="toggleChannel('yt')">
-          <div class="ch-left"><div class="ch-dot"></div>▶ 유튜브</div>
-          <div class="ch-status">숏츠·영상</div>
-        </div>
-        <div class="ch-toggle on-blog" id="tog-blog" onclick="toggleChannel('blog')">
-          <div class="ch-left"><div class="ch-dot"></div>✍ 블로그</div>
-          <div class="ch-status">포스팅</div>
-        </div>
+      <div class="slabel">발행 채널</div>
+      <div class="ch-row">
+        <button class="ch-btn on-ig" id="ch-ig" onclick="toggleCh('ig')">📷 릴스</button>
+        <button class="ch-btn on-yt" id="ch-yt" onclick="toggleCh('yt')">▶ 숏츠</button>
+        <button class="ch-btn on-blog" id="ch-blog" onclick="toggleCh('blog')">✍ 블로그</button>
       </div>
     </div>
 
-    <!-- 타겟 -->
     <div>
-      <div class="section-label">타겟 & 브랜드 성격</div>
-      <div class="form-group">
-        <textarea class="form-input" id="targetCtx" rows="3" placeholder="예: 20대 여성, 미니멀 무드, 데일리룩 위주. 무신사 스타일 레퍼런스." style="resize:none; line-height:1.5"></textarea>
-        <div class="form-hint">구체적일수록 예측 적중률이 높아져요</div>
-      </div>
+      <div class="slabel">타겟 & 브랜드</div>
+      <textarea class="finput" id="targetCtx" rows="2" placeholder="예: 20대 여성, 미니멀 무드, 데일리룩. 무신사 스타일." style="resize:none;line-height:1.5"></textarea>
     </div>
 
-    <!-- API 키 -->
     <div>
-      <div class="section-label">API 키 <span class="key-saved" id="keySaved"></span></div>
-      <div class="key-toggle" id="keyToggle" onclick="toggleKeys()">🔑 키 설정 보기 <span class="arr">▼</span></div>
-      <div class="key-section" id="keySection">
-        <div class="form-group"><label class="form-label">네이버 Client ID</label><input type="password" class="form-input" id="naverId"></div>
-        <div class="form-group"><label class="form-label">네이버 Client Secret</label><input type="password" class="form-input" id="naverSec"></div>
-        <div class="form-group"><label class="form-label">Claude API Key</label><input type="password" class="form-input" id="claudeKey"></div>
+      <div class="slabel">📱 요즘 SNS 트렌드 포맷</div>
+      <textarea class="finput" id="snsFormats" rows="4" placeholder="팀원이 발견한 유행 포맷 입력&#10;예: 주술회전 스타일 코디&#10;밀레니얼 vs 젠지 비교&#10;GRWM / 비포애프터 변신룩" style="resize:none;line-height:1.6"></textarea>
+      <div class="fhint">지금 SNS에서 반응 좋은 포맷 → Claude가 패션 기획안으로 만들어줘요</div>
+    </div>
+
+    <div>
+      <div class="slabel">API 키</div>
+      <div class="key-row" onclick="toggleKeys()">🔑 키 설정 <span id="keyArrow">▼</span></div>
+      <div class="key-body" id="keyBody">
+        <div class="fgroup"><div class="flabel">네이버 Client ID</div><input type="password" class="finput" id="navId"></div>
+        <div class="fgroup"><div class="flabel">네이버 Client Secret</div><input type="password" class="finput" id="navSec"></div>
+        <div class="fgroup"><div class="flabel">Claude API Key</div><input type="password" class="finput" id="claudeKey"></div>
         <button class="save-btn" onclick="saveKeys()">저장</button>
       </div>
     </div>
 
-    <button class="run-btn" id="runBtn" onclick="runPrediction()">
-      <span>🔮</span><span id="runTxt">트렌드 예측 시작</span>
-    </button>
+    <button class="run-btn" id="runBtn" onclick="run()">🔮 트렌드 예측 시작</button>
   </div>
 
-  <div class="main-content" id="mainContent">
-    <div class="empty-state" id="emptyState">
-      <div class="empty-icon">🔮</div>
-      <div class="empty-title">발행일을 설정하고<br>예측을 시작하세요</div>
-      <div class="empty-desc">
-        해외 선행 신호 + 네이버 급상승 패턴 + 계절 데이터를<br>
-        교차 분석해서 <strong>발행 시점에 피크칠 키워드</strong>를 예측해요
-      </div>
-      <div class="empty-tag">✨ 지금 만들어야 할 콘텐츠, AI가 예측</div>
+  <div class="main" id="main">
+    <div class="empty" id="emptyState">
+      <div class="empty-ico">🔮</div>
+      <div class="empty-title">발행일 설정 후<br>예측을 시작하세요</div>
+      <div class="empty-desc">Google Trends 실시간 데이터 + 네이버 과거 패턴을 분석해서<br><strong>발행 시점에 피크칠 키워드</strong>를 예측해요</div>
     </div>
 
     <div class="err" id="errBox"></div>
 
-    <div class="progress-card" id="progressCard">
-      <div class="section-label">예측 진행 중</div>
+    <div class="prog-card" id="progCard">
+      <div class="slabel">분석 진행 중</div>
       <div class="prog-steps">
-        <div class="prog-step" id="ps1"><div class="prog-ico">1</div><span>Claude AI — SNS 실시간 트렌드 키워드 발굴</span></div>
-        <div class="prog-step" id="ps2"><div class="prog-ico">2</div><span>발굴된 키워드 네이버 검색량 검증</span></div>
-        <div class="prog-step" id="ps3"><div class="prog-ico">3</div><span>급상승 속도 · 계절 패턴 분석</span></div>
-        <div class="prog-step" id="ps4"><div class="prog-ico">4</div><span>Claude AI 발행일 기준 역산 예측</span></div>
-        <div class="prog-step" id="ps5"><div class="prog-ico">5</div><span>채널별 기획안 생성</span></div>
+        <div class="pstep" id="ps1"><div class="pico">1</div><span>Google Trends — 실시간 패션 급상승 키워드 수집</span></div>
+        <div class="pstep" id="ps2"><div class="pico">2</div><span>네이버 DataLab — 현재 검색량 + 1년 전 패턴 비교</span></div>
+        <div class="pstep" id="ps3"><div class="pico">3</div><span>시즌 패턴 & 급상승 속도 분석</span></div>
+        <div class="pstep" id="ps4"><div class="pico">4</div><span>Claude AI — 발행일 기준 역산 예측</span></div>
+        <div class="pstep" id="ps5"><div class="pico">5</div><span>채널별 키워드 & 기획안 생성</span></div>
       </div>
     </div>
 
-    <div id="resultsWrap" style="display:none">
-      <div class="result-head">
+    <div id="resWrap" style="display:none">
+      <div class="res-head">
         <div>
-          <div class="result-title" id="resTitle"></div>
-          <div class="result-meta" id="resMeta"></div>
+          <div class="res-title" id="resTitle"></div>
+          <div class="res-meta" id="resMeta"></div>
         </div>
-        <button class="new-btn" onclick="resetUI()">새 예측 ↺</button>
+        <button class="new-btn" onclick="reset()">새 예측 ↺</button>
       </div>
 
-      <!-- TOP PICKS -->
-      <div class="top-picks" id="topPicks"></div>
+      <div class="picks" id="topPicks"></div>
 
-      <!-- 3가지 신호 -->
-      <div class="signal-row">
-        <div class="signal-card">
-          <div class="signal-head">
-            <span class="signal-badge badge-naver">NAVER</span>
-            <span class="signal-title">현재 검색량</span>
-          </div>
-          <div class="signal-body">
-            <div class="kw-bars" id="naverBars"></div>
-            <div class="notice" id="naverNotice" style="display:none"></div>
-          </div>
+      <div class="sig-grid">
+        <div class="sig-card">
+          <div class="sig-head"><span class="sig-badge badge-live">LIVE</span><span class="sig-title">Google Trends 실시간</span></div>
+          <div class="sig-body"><div class="kw-bars" id="gtBars"></div><div class="notice" id="gtNotice" style="display:none"></div></div>
         </div>
-        <div class="signal-card">
-          <div class="signal-head">
-            <span class="signal-badge badge-overseas">해외 선행</span>
-            <span class="signal-title">해외 선행 신호</span>
-          </div>
-          <div class="signal-body">
-            <div class="overseas-items" id="overseasItems"></div>
-          </div>
+        <div class="sig-card">
+          <div class="sig-head"><span class="sig-badge badge-naver">NAVER</span><span class="sig-title">현재 검색량</span></div>
+          <div class="sig-body"><div class="kw-bars" id="naverBars"></div><div class="notice" id="naverNotice" style="display:none"></div></div>
         </div>
-        <div class="signal-card">
-          <div class="signal-head">
-            <span class="signal-badge badge-velocity">급상승</span>
-            <span class="signal-title">급상승 속도</span>
-          </div>
-          <div class="signal-body">
-            <div class="kw-bars" id="velocityBars"></div>
-          </div>
+        <div class="sig-card">
+          <div class="sig-head"><span class="sig-badge badge-pattern">YoY</span><span class="sig-title">작년 동기 대비</span></div>
+          <div class="sig-body"><div class="kw-bars" id="yoyBars"></div></div>
+        </div>
+        <div class="sig-card">
+          <div class="sig-head"><span class="sig-badge badge-trend">급상승</span><span class="sig-title">급상승 속도</span></div>
+          <div class="sig-body"><div class="kw-bars" id="velBars"></div></div>
         </div>
       </div>
 
-      <!-- AI 예측 결과 -->
-      <div class="predict-section">
-        <div class="predict-section-head">
-          <span style="font-size:18px">🔮</span>
-          <div>
-            <div class="predict-section-title" id="predictTitle">AI 예측 — 채널별 기획안</div>
-            <div style="font-size:10.5px; color:var(--predict); opacity:0.7; font-family:'DM Mono',monospace; margin-top:1px" id="predictMeta"></div>
-          </div>
+      <div class="ai-section">
+        <div class="ai-head"><span style="font-size:17px">🔮</span>
+          <div><div class="ai-title" id="aiTitle">AI 예측 — 채널별 기획안</div>
+          <div style="font-size:10px;color:var(--purple);opacity:.7;font-family:'DM Mono',monospace;margin-top:1px" id="aiMeta"></div></div>
         </div>
-        <div class="predict-section-body">
-          <div class="ch-cards" id="chCards"></div>
-        </div>
+        <div class="ai-body"><div class="ch-grid3" id="chCards"></div></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const channels = { ig: true, yt: true, blog: true };
-
-const FASHION_KWS = [
-  { name:'여름코디', kws:['여름코디','여름룩','여름패션'] },
-  { name:'린넨', kws:['린넨','린넨코디','린넨원피스'] },
-  { name:'보헤미안', kws:['보헤미안','보헤미안룩'] },
-  { name:'러닝코어', kws:['러닝코어','러닝룩','스포티룩'] },
-  { name:'믹스매치', kws:['믹스매치','믹스매치코디'] },
-  { name:'슬립드레스', kws:['슬립드레스','슬립원피스'] },
-  { name:'피셔맨코어', kws:['피셔맨코어','어부룩'] },
-  { name:'Y2K', kws:['Y2K','Y2K코디','Y2K패션'] },
-  { name:'고프코어', kws:['고프코어','아웃도어룩'] },
-  { name:'백꾸', kws:['백꾸','가방꾸미기'] },
-  { name:'올드머니', kws:['올드머니룩','올드머니'] },
-  { name:'슬래커코어', kws:['슬래커코어','슬래커룩','슬랙커코어'] },
-  { name:'발레코어', kws:['발레코어','발레룩','발레리나룩'] },
-  { name:'덤코어', kws:['덤코어','덤룩'] },
-  { name:'로맨틱코어', kws:['로맨틱코어','코티지코어'] },
-];
+const chs = {ig:true, yt:true, blog:true};
 
 window.addEventListener('load', () => {
-  // 발행일 기본값: 오늘 + 14일
-  const pub = new Date();
-  pub.setDate(pub.getDate() + 14);
-  document.getElementById('publishDate').value = fmtDate(pub);
-  const map = { naverId:'naver_id', naverSec:'naver_sec', claudeKey:'claude_key' };
-  Object.entries(map).forEach(([id,k]) => { const v = localStorage.getItem(k); if(v) document.getElementById(id).value = v; });
-  if(localStorage.getItem('naver_id')) document.getElementById('keySaved').classList.add('show');
+  const d = new Date(); d.setDate(d.getDate()+14);
+  document.getElementById('pubDate').value = fmt(d);
+  ['navId','navSec','claudeKey'].forEach(id => {
+    const v = localStorage.getItem(id); if(v) document.getElementById(id).value = v;
+  });
 });
 
-function fmtDate(d) { return d.toISOString().split('T')[0]; }
-function addDays(dateStr, n) { const d = new Date(dateStr); d.setDate(d.getDate()+n); return fmtDate(d); }
+function fmt(d){ return d instanceof Date ? d.toISOString().slice(0,10) : d; }
+function addDays(s,n){ const d=new Date(s); d.setDate(d.getDate()+n); return fmt(d); }
+function dateHash(s){ let h=0; for(let i=0;i<s.length;i++) h=(Math.imul(31,h)+s.charCodeAt(i))|0; return Math.abs(h); }
+function seeded(seed){ return ((seed*1664525+1013904223)&0xffffffff)/0xffffffff; }
 
-function toggleChannel(c) {
-  channels[c] = !channels[c];
-  const map = { ig:'on-ig', yt:'on-yt', blog:'on-blog' };
-  document.getElementById(`tog-${c}`).classList.toggle(map[c], channels[c]);
+function toggleCh(c){
+  chs[c]=!chs[c];
+  const map={ig:'on-ig',yt:'on-yt',blog:'on-blog'};
+  document.getElementById(`ch-${c}`).classList.toggle(map[c],chs[c]);
 }
-function toggleKeys() {
-  document.getElementById('keyToggle').classList.toggle('open');
-  document.getElementById('keySection').classList.toggle('open');
+function toggleKeys(){
+  document.getElementById('keyBody').classList.toggle('open');
+  document.getElementById('keyArrow').textContent = document.getElementById('keyBody').classList.contains('open')?'▲':'▼';
 }
-function saveKeys() {
-  const map = { naverId:'naver_id', naverSec:'naver_sec', claudeKey:'claude_key' };
-  Object.entries(map).forEach(([id,k]) => localStorage.setItem(k, document.getElementById(id).value));
-  document.getElementById('keySaved').classList.add('show');
-  const btn = event.target; btn.textContent='✓ 저장됨'; setTimeout(()=>btn.textContent='저장',1500);
+function saveKeys(){
+  ['navId','navSec','claudeKey'].forEach(id => localStorage.setItem(id, document.getElementById(id).value));
+  const btn=event.target; btn.textContent='✓ 저장됨'; setTimeout(()=>btn.textContent='저장',1500);
 }
-
-function setStep(n) {
-  for(let i=1;i<=5;i++) {
+function setStep(n){
+  for(let i=1;i<=5;i++){
     const el=document.getElementById(`ps${i}`); if(!el) continue;
     el.classList.remove('done','active');
-    const ico=el.querySelector('.prog-ico');
+    const ico=el.querySelector('.pico');
     if(i<n){el.classList.add('done');ico.textContent='✓';}
     else if(i===n){el.classList.add('active');ico.textContent='↻';}
     else ico.textContent=i;
   }
 }
+function showErr(msg){const e=document.getElementById('errBox');e.textContent=msg;e.classList.add('show');}
+function reset(){
+  document.getElementById('resWrap').style.display='none';
+  document.getElementById('progCard').classList.remove('show');
+  document.getElementById('errBox').classList.remove('show');
+  document.getElementById('emptyState').style.display='flex';
+}
 
-// ── 날짜 해시 (결정론적 랜덤) ──────────────────────────────
-function dateHash(s) { let h=0; for(let i=0;i<s.length;i++) h=(Math.imul(31,h)+s.charCodeAt(i))|0; return Math.abs(h); }
-function seededRand(seed) { return ((seed*1664525+1013904223)&0xffffffff)/0xffffffff; }
+// ── Google Trends (Netlify 함수 경유) ──────────────────
+async function fetchGoogleTrends(pubDate) {
+  try {
+    const res = await fetch('/.netlify/functions/trends', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ pubDate })
+    });
+    if(!res.ok) throw new Error(`trends ${res.status}`);
+    const d = await res.json();
+    return d.keywords || [];
+  } catch(e) {
+    console.warn('Google Trends failed:', e.message);
+    return [];
+  }
+}
 
-// ── 네이버 DataLab ────────────────────────────────────────
-async function fetchNaverBatch(id, sec, start, end, groups) {
-  const reqBody = JSON.stringify({
-    startDate: start, endDate: end, timeUnit: 'date',
-    keywordGroups: groups.map(g => ({groupName: g.name, keywords: g.kws})),
-    device: '', ages: [], gender: ''
+// ── 네이버 DataLab ─────────────────────────────────────
+async function fetchNaverBatch(id, sec, start, end, kws) {
+  const body = JSON.stringify({
+    startDate:start, endDate:end, timeUnit:'date',
+    keywordGroups: kws.map(k=>({groupName:k.name, keywords:k.kws})),
+    device:'', ages:[], gender:''
   });
   try {
-    const r = await fetch('/.netlify/functions/naver', {
+    const r = await fetch('/.netlify/functions/naver',{
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ clientId:id, clientSecret:sec, body:reqBody }),
+      body: JSON.stringify({clientId:id, clientSecret:sec, body})
     });
-    if(!r.ok) throw new Error(`status ${r.status}`);
+    if(!r.ok) throw new Error(`naver ${r.status}`);
     const d = await r.json();
     if(d.errorCode) throw new Error(d.message||d.errorCode);
-    return (d.results||[]).map(res => {
-      const pts = res.data||[];
-      if(!pts.length) return null;
+    return (d.results||[]).map(res=>{
+      const pts=res.data||[]; if(!pts.length) return null;
       return Math.round(pts.reduce((s,p)=>s+p.ratio,0)/pts.length*10)/10;
     });
-  } catch(e) { console.warn('Naver batch failed', e.message); return groups.map(()=>null); }
+  } catch(e) { console.warn('Naver batch failed:', e.message); return kws.map(()=>null); }
 }
 
-async function fetchAllNaver(id, sec, publishDate) {
-  // 현재 시점 기준 최근 2주 데이터 (지금 급상승 감지용)
-  const today = fmtDate(new Date());
-  const twoWeeksAgo = addDays(today, -14);
-
-  // 이전 2주 (속도 비교용)
-  const fourWeeksAgo = addDays(today, -28);
-
-  const results = [];
-  let anyReal = false;
-  const BATCH = 5;
-
-  // 현재 2주 데이터
-  const currentVals = [];
-  for(let i=0;i<FASHION_KWS.length;i+=BATCH) {
-    const batch = FASHION_KWS.slice(i,i+BATCH);
-    const vals = await fetchNaverBatch(id, sec, twoWeeksAgo, today, batch);
-    currentVals.push(...vals);
-    if(i+BATCH<FASHION_KWS.length) await new Promise(r=>setTimeout(r,200));
-  }
-
-  // 이전 2주 데이터 (속도 계산)
-  const prevVals = [];
-  for(let i=0;i<FASHION_KWS.length;i+=BATCH) {
-    const batch = FASHION_KWS.slice(i,i+BATCH);
-    const vals = await fetchNaverBatch(id, sec, fourWeeksAgo, twoWeeksAgo, batch);
-    prevVals.push(...vals);
-    if(i+BATCH<FASHION_KWS.length) await new Promise(r=>setTimeout(r,200));
-  }
-
-  FASHION_KWS.forEach((g, idx) => {
-    const cur = currentVals[idx];
-    const prev = prevVals[idx];
-    if(cur !== null) anyReal = true;
-    const curVal = cur ?? simulateOne(g.name, today, FASHION_KWS[idx]);
-    const prevVal = prev ?? simulateOne(g.name, fourWeeksAgo, FASHION_KWS[idx]);
-    const velocity = prevVal > 0 ? Math.round((curVal - prevVal) / prevVal * 100) : 0;
-    results.push({ name: g.name, value: curVal, prevValue: prevVal, velocity, simulated: cur===null });
-  });
-
-  return { data: results, anyReal };
-}
-
-function simulateOne(name, dateStr) {
-  const m = new Date(dateStr).getMonth()+1;
-  const s = m>=6&&m<=8;
-  const base = {'여름코디':s?88:25,'린넨':s?82:18,'보헤미안':s?65:38,'러닝코어':70,'믹스매치':56,
-    '슬립드레스':s?73:22,'피셔맨코어':s?60:20,'Y2K':74,'고프코어':50,'백꾸':63,'올드머니':68,'코어룩':45};
-  const b = base[name]||50;
-  const seed = dateHash(dateStr+name);
-  return Math.max(10, Math.min(100, b+Math.round((seededRand(seed)-0.5)*20)));
-}
-
-// ── STEP 1: Claude 웹서치로 트렌드 키워드 발굴 ──────────
-async function discoverTrendingKeywords(claudeKey, publishDate, targetCtx) {
-  const today = new Date().toISOString().slice(0,10);
-  const month = new Date(today).getMonth() + 1;
-  const season = month >= 3 && month <= 5 ? '봄' : month >= 6 && month <= 8 ? '여름' : month >= 9 && month <= 11 ? '가을' : '겨울';
-  const pubMonth = new Date(publishDate).getMonth() + 1;
-  const pubSeason = pubMonth >= 3 && pubMonth <= 5 ? '봄' : pubMonth >= 6 && pubMonth <= 8 ? '여름' : pubMonth >= 9 && pubMonth <= 11 ? '가을' : '겨울';
-
-  const prompt = `오늘: ${today} (${season} 시즌). 발행 예정일: ${publishDate} (${pubSeason} 시즌).
-타겟: ${targetCtx||'한국 20대 여성 패션 SNS 팔로워'}
-
-당신은 한국 SNS 패션 트렌드 전문가입니다.
-지금 ${today} 기준으로 실제 SNS에서 뜨고 있는 패션 키워드를 분석해주세요.
-
-다음 기준으로 키워드를 선별하세요:
-- 인스타그램/틱톡 해시태그 실제 사용량 증가 중인 것
-- 해외(미국/유럽/일본) 대비 한국 도달이 늦은 것 (선행 지표)
-- ${pubSeason} 시즌에 맞는 것
-- 기존 메가트렌드가 아닌 새로 부상하는 마이크로트렌드 포함
-- 영문 심미어코어 계열 (예: slacker core, mob wife, coquette, dark academia 등 최신 것)
-
-**절대로 린넨, Y2K, 믹스매치 같은 이미 알려진 키워드만 나열하지 마세요.**
-지금 이 시점(${today})에 특화된 새로운 키워드여야 해요.
-
-다음 JSON만 반환하세요 (다른 텍스트 없이):
-{
-  "discoveredKeywords": [
-    {
-      "keyword": "키워드명 (한국어 표기)",
-      "source": "Instagram / TikTok KR / TikTok US / Pinterest / Vogue Korea 등",
-      "strength": "🔥HOT / 📈RISING / 👀WATCH",
-      "koreaEta": "${pubSeason} 피크 예상 / 이미 진입 중 / 진입 전",
-      "reason": "왜 지금 주목해야 하는지 한 줄 (구체적으로)",
-      "contentAngle": "릴스/숏츠로 만든다면 어떤 각도로 접근할지"
-    }
-  ]
-}
-
-반드시 12~15개 키워드. 슬래커코어, 덤코어, 카우걸코어, 로맨틱코어, 올드머니, 발레코어 등 다양한 심미코어 계열 포함. 매번 다른 시각으로 분석해주세요.`;
-
-  try {
-    const res = await fetch('/.netlify/functions/claude', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        apiKey: claudeKey,
-        payload: {
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 2000,
-          tools: [],
-          messages: [{ role:'user', content: prompt }]
-        }
-      })
-    });
-    if(!res.ok) throw new Error(`claude ${res.status}`);
-    const d = await res.json();
-    const textBlocks = (d.content||[]).filter(b=>b.type==='text');
-    const raw = textBlocks.map(b=>b.text).join('');
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if(!jsonMatch) throw new Error('no json');
-    const parsed = JSON.parse(jsonMatch[0]);
-    return parsed.discoveredKeywords || parsed.signals || [];
-  } catch(e) {
-    console.warn('keyword discovery failed', e.message);
-    return fallbackOverseas(publishDate);
-  }
-}
-
-function fallbackOverseas(publishDate) {
-  const m = new Date(publishDate).getMonth()+1;
-  const s = m>=6&&m<=8;
-  return s ? [
-    { keyword:'Coastal grandmother', source:'Pinterest US', strength:'📈RISING', koreaEta:'2~3주 후', reason:'린넨+해양 감성, 여름 시즌 최적', contentAngle:'한국식 "할머니 감성" 리인터프리팅' },
-    { keyword:'Tomato girl summer', source:'TikTok US', strength:'🔥HOT', koreaEta:'1~2주 후', reason:'레드·오렌지 컬러 여름룩, 이미 국내 진입 중', contentAngle:'시장통 감성 코디 vs 럭셔리 버전 비교' },
-    { keyword:'Ballet core', source:'Vogue EU', strength:'📈RISING', koreaEta:'3~4주 후', reason:'발레 감성 일상룩, 여름 소재 버전 나옴', contentAngle:'발레 슈즈 + 여름 원피스 데일리 조합' },
-    { keyword:'Quiet luxury casual', source:'WWD', strength:'👀WATCH', koreaEta:'4~6주 후', reason:'올드머니의 캐주얼화, 가을 이행기 키워드', contentAngle:'명품 없이 올드머니 분위기 내는 법' },
-    { keyword:'Mob wife aesthetics', source:'TikTok EU', strength:'👀WATCH', koreaEta:'5~6주 후', reason:'과감한 프린트·퍼 트렌드, 시즌 전환기 예열', contentAngle:'한국식 해석 — 과하지 않은 드라마틱 룩' },
-  ] : [
-    { keyword:'Quiet luxury', source:'Pinterest US', strength:'🔥HOT', koreaEta:'1~2주 후', reason:'이미 국내 진입, 아직 검색량 피크 미도달', contentAngle:'브랜드 없이 올드머니 룩 완성하기' },
-    { keyword:'Gorpcore 2.0', source:'Vogue US', strength:'📈RISING', koreaEta:'3~4주 후', reason:'아웃도어+하이패션 믹스, 가을 키워드', contentAngle:'등산룩 × 오피스룩 믹스매치' },
-    { keyword:'Dark academia', source:'TikTok EU', strength:'📈RISING', koreaEta:'2~3주 후', reason:'가을 이행기, 학구적 감성 코디 수요 증가', contentAngle:'서울대 도서관 감성 가을 코디' },
-    { keyword:'Workwear revival', source:'WWD', strength:'👀WATCH', koreaEta:'4~5주 후', reason:'오피스 복귀 시즌, 블레이저 믹스 트렌드', contentAngle:'회사원 코디 업그레이드 가이드' },
-    { keyword:'Y2K moto', source:'TikTok US', strength:'👀WATCH', koreaEta:'5~6주 후', reason:'Y2K의 다음 파도, 바이커 자켓 믹스', contentAngle:'Y2K에 엣지 추가 — 가을 버전' },
-  ];
-}
-
-// ── Claude AI 예측 분석 ───────────────────────────────────
-async function callClaudePrediction(claudeKey, params) {
-  const { publishDate, naverData, overseasSignals, activeChannels, targetCtx, today } = params;
-
-  const daysUntil = Math.round((new Date(publishDate) - new Date(today)) / 86400000);
-  const topNaver = [...naverData].sort((a,b)=>b.value-a.value).slice(0,8)
-    .map(k=>`${k.name}(현재:${k.value}, 전주대비:${k.velocity>0?'+':''}${k.velocity}%${k.simulated?'*':''})`).join(', ');
-  const risingNaver = [...naverData].sort((a,b)=>b.velocity-a.velocity).slice(0,4)
-    .map(k=>`${k.name}(+${k.velocity}%)`).join(', ');
-  const overseasStr = overseasSignals.map(s=>`${s.keyword}[${s.strength}/${s.source}] ${s.reason}`).join('\n');
-
-  const chMap = { ig:'인스타그램 릴스', yt:'유튜브 숏츠+영상', blog:'블로그 포스팅' };
-  const chDesc = activeChannels.map(c=>chMap[c]).join(', ');
-
-  const prompt = `당신은 한국 패션 SNS 콘텐츠 트렌드 예측 전문가입니다.
-
-## 인풋 데이터
-- 오늘: ${today}
-- 발행 예정일: ${publishDate} (${daysUntil}일 후)
-- 타겟/브랜드 성격: ${targetCtx||'미입력 (일반 패션)'}
-- 발행 채널: ${chDesc}
-
-## 네이버 패션 검색량 (최근 2주 평균, *=추정치)
-${topNaver}
-
-## 급상승 TOP 4 (전주 대비 증가율)
-${risingNaver}
-
-## 해외 선행 신호 (4~6주 후행 감안)
-${overseasStr}
-
----
-
-발행일(${publishDate}) 기준으로 역산해서, **지금 기획을 시작해야 할** 키워드와 콘텐츠를 예측해주세요.
-
-다음 JSON 형식으로만 답하세요 (마크다운 코드블록 없이 순수 JSON):
-
-{
-  "topPicks": [
-    { "type": "now", "keyword": "지금 당장 잡아야 할 키워드", "reason": "이유 한 줄", "timing": "발행 타이밍" },
-    { "type": "predict", "keyword": "발행일에 피크칠 예측 키워드", "reason": "이유 한 줄", "timing": "피크 예상 시기" },
-    { "type": "avoid", "keyword": "지금 피해야 할 키워드", "reason": "이유 한 줄 (포화/하락)", "timing": "피크 이미 지남" }
-  ],
-  "channels": {
-    "ig": "## 🔥 지금 올려야 할 키워드 TOP 5\\n키워드 | 상태 | 이유\\n\\n## 릴스 기획 TOP 3\\n제목 | 포맷 | 타이밍\\n\\n## ⚠️ 피해야 할 것\\n키워드 | 이유",
-    "yt": "## 🔥 기획해야 할 주제 TOP 5\\n주제 | 상태 | 이유\\n\\n## 영상 기획 TOP 3\\n제목(SEO) | 숏츠 선발행 여부 | 발행 타이밍\\n\\n## ⚠️ 피해야 할 것",
-    "blog": "## 🔥 SEO 키워드 TOP 5\\n키워드 | 검색량 추세 | 이유\\n\\n## 포스팅 기획 TOP 3\\n제목 | 구조 | 발행 타이밍\\n\\n## ⚠️ 피해야 할 것"
-  }
-}
-
-channels 중 활성 채널(${activeChannels.join(', ')})만 내용을 채우고, 비활성 채널은 빈 문자열로 두세요.
-각 채널 텍스트는 한국어로, 간결하고 실용적으로 작성하세요.`;
-
+// ── Claude AI 예측 ─────────────────────────────────────
+async function callClaude(apiKey, prompt) {
   const res = await fetch('/.netlify/functions/claude', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
-      apiKey: claudeKey,
-      payload: {
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2000,
-        messages: [{ role:'user', content: prompt }]
-      }
+      apiKey,
+      payload: { model:'claude-haiku-4-5-20251001', max_tokens:2500, messages:[{role:'user',content:prompt}] }
     })
   });
-  if(!res.ok) { const e=await res.text(); throw new Error(`Claude: ${res.status} - ${e}`); }
+  if(!res.ok) throw new Error(`Claude ${res.status}`);
   const d = await res.json();
+  if(d.error) throw new Error(d.error);
   const raw = (d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-  const jsonMatch = raw.match(/\{[\s\S]*\}/);
-  if(!jsonMatch) throw new Error('Claude 응답 파싱 실패');
-  return JSON.parse(jsonMatch[0]);
+  const m = raw.match(/\{[\s\S]*\}/);
+  if(!m) throw new Error('Claude 응답 파싱 실패');
+  return JSON.parse(m[0]);
 }
 
-// ── 렌더링 ────────────────────────────────────────────────
-function renderNaverBars(data) {
-  const sorted = [...data].sort((a,b)=>b.value-a.value).slice(0,10);
-  const max = Math.max(...sorted.map(d=>d.value));
-  const anyEst = sorted.some(d=>d.simulated);
-  document.getElementById('naverBars').innerHTML = sorted.map(d => {
-    const tag = d.velocity >= 20 ? '<span class="kw-tag tag-hot">HOT↑</span>'
-              : d.velocity >= 8  ? '<span class="kw-tag tag-rising">↑</span>'
-              : d.velocity <= -10 ? '<span class="kw-tag" style="background:rgba(156,163,175,0.12);color:#9ca3af">↓</span>'
-              : '';
-    return `<div class="kw-row">
-      <div class="kw-name">${d.name}${d.simulated?'<span style="color:var(--ink3);font-size:8px"> *</span>':''}</div>
-      <div class="bar-bg"><div class="bar-fill bar-naver" style="width:${(d.value/max*100).toFixed(1)}%"></div></div>
-      <div class="kw-val">${d.value}</div>
-      ${tag}
-    </div>`;
-  }).join('');
-  if(anyEst) {
-    const n=document.getElementById('naverNotice');
-    n.style.display='block';
-    n.innerHTML='* CORS 제한으로 추정치 <a href="https://datalab.naver.com" target="_blank">→ DataLab 직접 확인</a>';
-  }
-}
-
-function renderVelocityBars(data) {
-  const sorted = [...data].sort((a,b)=>b.velocity-a.velocity).slice(0,8);
-  const max = Math.max(...sorted.map(d=>Math.abs(d.velocity)), 1);
-  document.getElementById('velocityBars').innerHTML = sorted.map(d => {
-    const pct = Math.min(100, Math.abs(d.velocity)/max*100).toFixed(1);
-    const cls = d.velocity > 0 ? 'bar-vel' : 'bar-naver';
-    const sign = d.velocity > 0 ? '+' : '';
-    return `<div class="kw-row">
-      <div class="kw-name">${d.name}</div>
-      <div class="bar-bg"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div>
-      <div class="kw-val">${sign}${d.velocity}%</div>
-    </div>`;
-  }).join('');
-}
-
-function renderOverseas(signals) {
-  document.getElementById('overseasItems').innerHTML = signals.slice(0,6).map(s => `
-    <div class="overseas-item">
-      <div class="overseas-kw">${s.keyword} <span style="font-size:11px">${s.strength}</span></div>
-      <div class="overseas-meta">${s.source} · 한국 ${s.koreaEta}</div>
-      <div class="overseas-reason">${s.contentAngle}</div>
-    </div>`).join('');
-}
-
-function renderTopPicks(picks) {
-  const typeMap = {
-    now:  { label:'🔥 지금 바로 기획', cls:'hot-pick', labelCls:'fire' },
-    predict: { label:'🔮 발행일 피크 예측', cls:'predict-pick', labelCls:'star' },
-    avoid:  { label:'⚠️ 지금 피해야 할 것', cls:'', labelCls:'' },
-  };
-  document.getElementById('topPicks').innerHTML = picks.map(p => {
-    const t = typeMap[p.type]||typeMap.now;
-    return `<div class="pick-card ${t.cls}">
-      <div class="pick-label ${t.labelCls}">${t.label}</div>
-      <div class="pick-keyword">${p.keyword}</div>
-      <div class="pick-desc">${p.reason}</div>
-      <div class="pick-timing">${p.timing}</div>
-    </div>`;
-  }).join('');
-}
-
-function renderMD(text) {
-  return text
-    .replace(/^#{1,3} (.+)/gm, '<h3>$1</h3>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/🔥HOT/g, '<span class="hot">🔥 HOT</span>')
-    .replace(/📈RISING/g, '<span class="rising">📈 RISING</span>')
-    .replace(/👀WATCH/g, '<span class="watch">👀 WATCH</span>')
-    .replace(/~~(.+?)~~/g, '<span class="avoid">$1</span>')
-    .replace(/^\d+\. (.+)/gm, '<li>$1</li>')
-    .replace(/^[-•] (.+)/gm, '<li>$1</li>')
-    .replace(/(<li>[\s\S]*?<\/li>\n?)+/g, m=>`<ul>${m}</ul>`)
-    .replace(/#([가-힣\w]+)/g, '<span class="kt">#$1</span>')
-    .replace(/\[(\d+~?\d*[일주].*?)\]/g, '<span class="timing">$1</span>')
-    .replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
-}
-
-function renderChannels(channelData, activeChannels) {
-  const cfg = {
-    ig:   { label:'📷 인스타그램 릴스', cls:'ch-label-ig' },
-    yt:   { label:'▶ 유튜브 숏츠·영상', cls:'ch-label-yt' },
-    blog: { label:'✍ 블로그', cls:'ch-label-blog' },
-  };
-  document.getElementById('chCards').innerHTML = activeChannels.map(ch => {
-    const c = cfg[ch];
-    const text = channelData[ch]||'';
-    return `<div class="ch-card">
-      <div class="ch-card-head"><div class="${c.cls}">${c.label}</div></div>
-      <div class="ch-card-body"><div class="ai-out">${renderMD(text)}</div></div>
-    </div>`;
-  }).join('');
-}
-
-// ── 메인 실행 ─────────────────────────────────────────────
-async function runPrediction() {
-  const publishDate = document.getElementById('publishDate').value;
-  const navId  = document.getElementById('naverId').value.trim();
-  const navSec = document.getElementById('naverSec').value.trim();
-  const clKey  = document.getElementById('claudeKey').value.trim();
+// ── 메인 ───────────────────────────────────────────────
+async function run() {
+  const pubDate = document.getElementById('pubDate').value;
+  const navId = document.getElementById('navId').value.trim();
+  const navSec = document.getElementById('navSec').value.trim();
+  const claudeApiKey = document.getElementById('claudeKey').value.trim();
   const targetCtx = document.getElementById('targetCtx').value.trim();
-  const activeChannels = Object.keys(channels).filter(c=>channels[c]);
-  const today = fmtDate(new Date());
+  const snsFormats = document.getElementById('snsFormats').value.trim();
+  const activeChs = Object.keys(chs).filter(c=>chs[c]);
+  const today = fmt(new Date());
 
   document.getElementById('errBox').classList.remove('show');
-  if(!publishDate) return showErr('발행 예정일을 입력해주세요.');
-  if(!clKey) return showErr('Claude API 키를 입력해주세요.');
-  if(!activeChannels.length) return showErr('발행 채널을 하나 이상 선택해주세요.');
+  if(!pubDate) return showErr('발행 예정일을 입력해주세요.');
+  if(!claudeApiKey) return showErr('Claude API 키를 입력해주세요.');
+  if(!activeChs.length) return showErr('채널을 하나 이상 선택해주세요.');
 
   document.getElementById('runBtn').disabled=true;
-  document.getElementById('runTxt').textContent='예측 중...';
+  document.getElementById('runBtn').querySelector('span:last-child').textContent='분석 중...';
   document.getElementById('emptyState').style.display='none';
-  document.getElementById('progressCard').classList.add('show');
-  document.getElementById('resultsWrap').style.display='none';
+  document.getElementById('progCard').classList.add('show');
+  document.getElementById('resWrap').style.display='none';
 
   try {
-    // STEP 1: Claude 웹서치로 트렌드 키워드 발굴
+    // STEP 1: Google Trends
     setStep(1);
-    const discoveredKws = await discoverTrendingKeywords(clKey, publishDate, targetCtx);
+    const gtData = await fetchGoogleTrends(pubDate);
 
-    // 발굴된 키워드를 FASHION_KWS 형식으로 변환 (네이버 조회용)
-    const dynamicKws = discoveredKws.map(k => ({
-      name: k.keyword,
-      kws: [k.keyword, k.keyword.replace(/코어$/,'룩'), k.keyword+'패션'].filter(Boolean)
-    }));
-    // 기본 키워드와 합치되 중복 제거
-    const baseNames = new Set(FASHION_KWS.map(k=>k.name));
-    const allKws = [...FASHION_KWS, ...dynamicKws.filter(k=>!baseNames.has(k.name))].slice(0,20);
-
-    // STEP 2: 네이버에서 발굴된 키워드 검증
+    // STEP 2: 네이버 DataLab — 현재 + 1년 전
     setStep(2);
-    let naverResult = { data: allKws.map(g=>({ name:g.name, value:simulateOne(g.name,today), prevValue:simulateOne(g.name,addDays(today,-14)), velocity:0, simulated:true })), anyReal:false };
-    if(navId && navSec) {
-      try {
-        // 발굴된 키워드로 네이버 조회
-        const origKws = FASHION_KWS.splice(0);
-        FASHION_KWS.length = 0;
-        allKws.forEach(k => FASHION_KWS.push(k));
-        naverResult = await fetchAllNaver(navId, navSec, publishDate);
-        FASHION_KWS.length = 0;
-        origKws.forEach(k => FASHION_KWS.push(k));
-      } catch(_) {}
+    // Claude가 Google Trends 데이터 기반으로 키워드 목록 생성
+    const kwPrompt = `패션 트렌드 키워드 목록을 JSON으로만 반환하세요.
+오늘: ${today}, 발행일: ${pubDate}, 타겟: ${targetCtx||'한국 패션'}
+Google Trends 급상승: ${gtData.map(k=>k.keyword).join(', ')||'데이터 없음'}
+
+한국 패션 SNS에서 현재 뜨고 있거나 뜰 것 같은 키워드 12개를 선정해주세요.
+현재 시즌(${new Date(today).getMonth()+1}월)과 발행 시즌(${new Date(pubDate).getMonth()+1}월)을 반영하세요.
+
+{"keywords":[{"name":"키워드","kws":["검색어1","검색어2"]}]}`;
+
+    let kwList;
+    try {
+      const kwRes = await callClaude(claudeApiKey, kwPrompt);
+      kwList = kwRes.keywords || [];
+    } catch(e) {
+      kwList = [
+        {name:'여름코디',kws:['여름코디','여름룩']},{name:'린넨',kws:['린넨','린넨코디']},
+        {name:'슬래커코어',kws:['슬래커코어','슬래커룩']},{name:'올드머니',kws:['올드머니룩']},
+        {name:'발레코어',kws:['발레코어','발레룩']},{name:'고프코어',kws:['고프코어']},
+        {name:'Y2K',kws:['Y2K','Y2K코디']},{name:'러닝코어',kws:['러닝코어']},
+        {name:'덤코어',kws:['덤코어']},{name:'로맨틱코어',kws:['로맨틱코어']},
+        {name:'백꾸',kws:['백꾸','가방꾸미기']},{name:'믹스매치',kws:['믹스매치']},
+      ];
     }
-    naverResult.data.forEach(d => {
-      if(d.simulated) {
-        const seed = dateHash(today+d.name+'vel');
-        d.velocity = Math.round((seededRand(seed)-0.45)*40);
+
+    // 현재 2주 + 이전 2주 + 작년 동기 데이터
+    const curStart = addDays(today,-14), prevStart = addDays(today,-28);
+    const yoyStart = addDays(today,-379), yoyEnd = addDays(today,-365);
+    const BATCH=5;
+    const curVals=[], prevVals=[], yoyVals=[];
+
+    for(let i=0;i<kwList.length;i+=BATCH){
+      const b=kwList.slice(i,i+BATCH);
+      const [c,p,y] = await Promise.all([
+        fetchNaverBatch(navId,navSec,curStart,today,b),
+        fetchNaverBatch(navId,navSec,prevStart,curStart,b),
+        fetchNaverBatch(navId,navSec,yoyStart,yoyEnd,b),
+      ]);
+      curVals.push(...c); prevVals.push(...p); yoyVals.push(...y);
+      if(i+BATCH<kwList.length) await new Promise(r=>setTimeout(r,300));
+    }
+
+    const naverData = kwList.map((k,i)=>({
+      name:k.name,
+      cur: curVals[i],
+      prev: prevVals[i],
+      yoy: yoyVals[i],
+      simulated: curVals[i]===null,
+      velocity: curVals[i]!==null && prevVals[i]!==null && prevVals[i]>0
+        ? Math.round((curVals[i]-prevVals[i])/prevVals[i]*100) : null,
+      yoyChange: curVals[i]!==null && yoyVals[i]!==null && yoyVals[i]>0
+        ? Math.round((curVals[i]-yoyVals[i])/yoyVals[i]*100) : null,
+    }));
+
+    // simulated 채우기
+    naverData.forEach(d=>{
+      if(d.simulated){
+        const s=dateHash(today+d.name);
+        d.cur=Math.round(50+seeded(s)*40);
+        d.velocity=Math.round((seeded(dateHash(d.name+'v'))-0.4)*60);
+        d.yoyChange=Math.round((seeded(dateHash(d.name+'y'))-0.4)*80);
       }
     });
+    const anyReal = naverData.some(d=>!d.simulated);
 
-    const overseasSignals = discoveredKws;
-
-    // STEP 3: 정규화
+    // STEP 3
     setStep(3);
     await new Promise(r=>setTimeout(r,300));
 
-    // 결과 컨테이너 미리 보여주기
-    document.getElementById('resultsWrap').style.display='block';
-    const daysUntil = Math.round((new Date(publishDate) - new Date(today)) / 86400000);
-    document.getElementById('resTitle').textContent = `발행 예정 ${daysUntil}일 후 · ${publishDate}`;
-    document.getElementById('resMeta').textContent = `네이버 ${naverResult.anyReal?'실데이터':'추정치'} · 해외 신호 ${overseasSignals.length}개 수집 · ${new Date().toLocaleString('ko-KR')}`;
-    document.getElementById('predictMeta').textContent = `발행일 ${publishDate} 기준 역산 예측`;
+    // 결과 화면 미리 표시
+    document.getElementById('resWrap').style.display='block';
+    const days=Math.round((new Date(pubDate)-new Date(today))/86400000);
+    document.getElementById('resTitle').textContent=`발행 예정 ${days}일 후 · ${pubDate}`;
+    document.getElementById('resMeta').textContent=`Google Trends ${gtData.length}개 · 네이버 ${anyReal?'실데이터':'추정치'} · ${new Date().toLocaleString('ko-KR')}`;
+    document.getElementById('aiMeta').textContent=`발행일 ${pubDate} 기준 역산 예측`;
 
-    renderNaverBars(naverResult.data);
-    renderVelocityBars(naverResult.data);
-    renderOverseas(overseasSignals);
+    renderGT(gtData);
+    renderNaver(naverData, anyReal);
+    renderYoY(naverData);
+    renderVel(naverData);
 
     // STEP 4: Claude 예측
     setStep(4);
-    let aiResult;
-    try {
-      aiResult = await callClaudePrediction(clKey, {
-        publishDate, naverData: naverResult.data, overseasSignals, activeChannels, targetCtx, today
-      });
-    } catch(e) {
-      throw new Error(`AI 예측 실패: ${e.message}`);
-    }
+    const top8 = [...naverData].sort((a,b)=>b.cur-a.cur).slice(0,8);
+    const rising4 = [...naverData].filter(d=>d.velocity!==null).sort((a,b)=>b.velocity-a.velocity).slice(0,4);
+    const yoyUp4 = [...naverData].filter(d=>d.yoyChange!==null).sort((a,b)=>b.yoyChange-a.yoyChange).slice(0,4);
 
-    // STEP 5: 렌더링
+    const chMap={ig:'인스타그램 릴스',yt:'유튜브 숏츠',blog:'블로그'};
+
+    const mainPrompt = `당신은 한국 패션 SNS 콘텐츠 전략가입니다.
+
+## 데이터
+오늘: ${today} / 발행 예정일: ${pubDate} (${days}일 후)
+타겟: ${targetCtx||'한국 패션 SNS 팔로워'}
+팀이 발견한 SNS 트렌드 포맷: ${snsFormats||'없음'}
+채널: ${activeChs.map(c=>chMap[c]).join(', ')}
+
+## Google Trends 실시간 급상승 (${gtData.length}개 수집)
+${gtData.length>0 ? gtData.slice(0,8).map(k=>`${k.keyword}(${k.value||'급상승'})`).join(', ') : '데이터 없음'}
+
+## 네이버 현재 검색량 TOP 8 (${anyReal?'실데이터':'추정치'})
+${top8.map(k=>`${k.name}:${k.cur}${k.simulated?'*':''}`).join(', ')}
+
+## 급상승 TOP 4 (전주 대비)
+${rising4.map(k=>`${k.name}:${k.velocity>0?'+':''}${k.velocity}%`).join(', ')}
+
+## 작년 동기 대비 상승 TOP 4
+${yoyUp4.map(k=>`${k.name}:${k.yoyChange>0?'+':''}${k.yoyChange}%`).join(', ')}
+
+---
+발행일(${pubDate}) 기준으로 지금 기획해야 할 아이템과 키워드를 예측하세요.
+과거 패턴(작년 대비)과 현재 급상승을 교차 분석해서 근거 있는 예측을 해주세요.
+
+JSON만 반환 (마크다운 없이):
+{
+  "topPicks":[
+    {"type":"now","keyword":"지금 당장 기획할 아이템","reason":"근거 한 줄","timing":"발행 타이밍"},
+    {"type":"predict","keyword":"발행일에 피크칠 키워드","reason":"근거 한 줄","timing":"피크 예상"},
+    {"type":"avoid","keyword":"지금 피해야 할 것","reason":"이유 한 줄","timing":"이미 피크"}
+  ],
+  "channels":{
+    "ig":"## 🔥 지금 올려야 할 키워드 TOP 5\\n- 키워드: 이유\\n\\n## 릴스 기획 TOP 3 (트렌드 포맷 반영)\\n- 제목: 사용할 포맷 / 타이밍\\n\\n## ⚠️ 피해야 할 것\\n- 키워드: 이유",
+    "yt":"## 🔥 기획할 주제 TOP 5\\n- 주제: 이유\\n\\n## 영상 기획 TOP 3\\n- 제목(SEO): 타이밍\\n\\n## ⚠️ 피해야 할 것",
+    "blog":"## 🔥 SEO 키워드 TOP 5\\n- 키워드: 트렌드 근거\\n\\n## 포스팅 기획 TOP 3\\n- 제목: 구조\\n\\n## ⚠️ 피해야 할 것"
+  }
+}
+비활성 채널(${Object.keys(chs).filter(c=>!chs[c]).join(',')})은 빈 문자열로.`;
+
+    const aiRes = await callClaude(claudeApiKey, mainPrompt);
+
+    // STEP 5
     setStep(5);
-    renderTopPicks(aiResult.topPicks||[]);
-    renderChannels(aiResult.channels||{}, activeChannels);
-
+    renderPicks(aiRes.topPicks||[]);
+    renderChannels(aiRes.channels||{}, activeChs);
     document.getElementById('ps5').classList.add('done');
-    document.getElementById('ps5').querySelector('.prog-ico').textContent='✓';
-    document.getElementById('progressCard').classList.remove('show');
+    document.getElementById('ps5').querySelector('.pico').textContent='✓';
+    document.getElementById('progCard').classList.remove('show');
 
   } catch(e) {
     showErr(`오류: ${e.message}`);
   } finally {
     document.getElementById('runBtn').disabled=false;
-    document.getElementById('runTxt').textContent='트렌드 예측 시작';
+    document.getElementById('runBtn').querySelector('span:last-child').textContent='트렌드 예측 시작';
   }
 }
 
-function showErr(msg) { const el=document.getElementById('errBox'); el.textContent=msg; el.classList.add('show'); }
-function resetUI() {
-  document.getElementById('resultsWrap').style.display='none';
-  document.getElementById('progressCard').classList.remove('show');
-  document.getElementById('errBox').classList.remove('show');
-  document.getElementById('emptyState').style.display='flex';
-  setStep(0);
+// ── 렌더링 ──────────────────────────────────────────────
+function renderBars(containerId, items, barClass, valFn, tagFn){
+  const max = Math.max(...items.map(d=>Math.abs(d.val||0)),1);
+  document.getElementById(containerId).innerHTML = items.map(d=>`
+    <div class="kw-row">
+      <div class="kw-name">${d.name}${d.sim?'<span style="font-size:8px;color:var(--ink3)"> *</span>':''}</div>
+      <div class="bar-bg"><div class="bar-fill ${barClass}" style="width:${(Math.abs(d.val||0)/max*100).toFixed(1)}%"></div></div>
+      <div class="kw-val">${valFn(d)}</div>
+      ${tagFn(d)}
+    </div>`).join('');
+}
+
+function renderGT(data){
+  if(!data.length){
+    document.getElementById('gtBars').innerHTML='<div style="font-size:11px;color:var(--ink3)">데이터 수집 중...</div>';
+    const n=document.getElementById('gtNotice'); n.style.display='block';
+    n.innerHTML='Google Trends 연결 중. 네이버 데이터로 대체 분석해요.'; return;
+  }
+  const max=Math.max(...data.map(d=>d.value||50),1);
+  document.getElementById('gtBars').innerHTML = data.slice(0,8).map(d=>`
+    <div class="kw-row">
+      <div class="kw-name">${d.keyword}</div>
+      <div class="bar-bg"><div class="bar-fill bar-blue" style="width:${((d.value||50)/max*100).toFixed(1)}%"></div></div>
+      <div class="kw-val">${d.value||'-'}</div>
+      <span class="kw-tag tag-up">↑</span>
+    </div>`).join('');
+}
+
+function renderNaver(data, anyReal){
+  const sorted=[...data].sort((a,b)=>b.cur-a.cur).slice(0,8);
+  const max=Math.max(...sorted.map(d=>d.cur),1);
+  document.getElementById('naverBars').innerHTML = sorted.map(d=>{
+    const tag = d.velocity>=20?'<span class="kw-tag tag-hot">HOT↑</span>'
+              : d.velocity>=8?'<span class="kw-tag tag-up">↑</span>'
+              : d.velocity<=-10?'<span class="kw-tag tag-down">↓</span>':'';
+    return `<div class="kw-row">
+      <div class="kw-name">${d.name}${d.simulated?'<span style="font-size:8px;color:var(--ink3)"> *</span>':''}</div>
+      <div class="bar-bg"><div class="bar-fill bar-green" style="width:${(d.cur/max*100).toFixed(1)}%"></div></div>
+      <div class="kw-val">${d.cur}</div>${tag}</div>`;
+  }).join('');
+  if(!anyReal){
+    const n=document.getElementById('naverNotice'); n.style.display='block';
+    n.innerHTML='* CORS 제한으로 추정치 <a href="https://datalab.naver.com" target="_blank">→ DataLab 직접 확인</a>';
+  }
+}
+
+function renderYoY(data){
+  const sorted=[...data].filter(d=>d.yoyChange!==null).sort((a,b)=>b.yoyChange-a.yoyChange).slice(0,8);
+  const max=Math.max(...sorted.map(d=>Math.abs(d.yoyChange)),1);
+  document.getElementById('yoyBars').innerHTML = sorted.map(d=>{
+    const pos=d.yoyChange>=0;
+    return `<div class="kw-row">
+      <div class="kw-name">${d.name}</div>
+      <div class="bar-bg"><div class="bar-fill ${pos?'bar-green':'bar-amber'}" style="width:${(Math.abs(d.yoyChange)/max*100).toFixed(1)}%"></div></div>
+      <div class="kw-val" style="color:${pos?'var(--green)':'var(--red)'}">${pos?'+':''}${d.yoyChange}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderVel(data){
+  const sorted=[...data].filter(d=>d.velocity!==null).sort((a,b)=>b.velocity-a.velocity).slice(0,8);
+  const max=Math.max(...sorted.map(d=>Math.abs(d.velocity)),1);
+  document.getElementById('velBars').innerHTML = sorted.map(d=>{
+    const pos=d.velocity>=0;
+    return `<div class="kw-row">
+      <div class="kw-name">${d.name}</div>
+      <div class="bar-bg"><div class="bar-fill ${pos?'bar-purple':'bar-amber'}" style="width:${(Math.abs(d.velocity)/max*100).toFixed(1)}%"></div></div>
+      <div class="kw-val" style="color:${pos?'var(--purple)':'var(--red)'}">${pos?'+':''}${d.velocity}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderPicks(picks){
+  const map={now:{lbl:'🔥 지금 기획할 아이템',cls:'fire',lcls:'fire'},predict:{lbl:'🔮 발행일 피크 예측',cls:'predict',lcls:'predict'},avoid:{lbl:'⚠️ 피해야 할 것',cls:'avoid',lcls:''}};
+  document.getElementById('topPicks').innerHTML = picks.map(p=>{
+    const t=map[p.type]||map.now;
+    return `<div class="pick ${t.cls}"><div class="pick-lbl ${t.lcls}">${t.lbl}</div><div class="pick-kw">${p.keyword}</div><div class="pick-desc">${p.reason}</div><div class="pick-timing">${p.timing}</div></div>`;
+  }).join('');
+}
+
+function renderMD(text){
+  return text
+    .replace(/^#{1,3} (.+)/gm,'<h3>$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/🔥HOT/g,'<span class="hot">🔥 HOT</span>')
+    .replace(/📈RISING/g,'<span class="rising">📈 RISING</span>')
+    .replace(/^[-•] (.+)/gm,'<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>\n?)+/g,m=>`<ul>${m}</ul>`)
+    .replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+}
+
+function renderChannels(channels, activeChs){
+  const cfg={ig:{lbl:'📷 인스타그램 릴스',col:'#e1306c'},yt:{lbl:'▶ 유튜브 숏츠',col:'#cc0000'},blog:{lbl:'✍ 블로그',col:'#2563eb'}};
+  document.getElementById('chCards').innerHTML = activeChs.map(ch=>{
+    const c=cfg[ch]; const text=channels[ch]||'';
+    return `<div class="ch-card">
+      <div class="ch-head"><span style="font-weight:800;font-size:12px;color:${c.col}">${c.lbl}</span></div>
+      <div class="ch-body"><div class="ai-out">${renderMD(text)}</div></div>
+    </div>`;
+  }).join('');
 }
 </script>
 </body>
