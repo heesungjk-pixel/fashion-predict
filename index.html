@@ -293,7 +293,6 @@ async function fetchShoppingInsight(navId, navSec, startDate, endDate) {
 
   for (const cat of categories) {
     try {
-      // 쇼핑인사이트 인기 검색어 (키워드 미리 안 정해도 됨!)
       const r = await fetch('/.netlify/functions/naver_shopping', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -302,9 +301,10 @@ async function fetchShoppingInsight(navId, navSec, startDate, endDate) {
           category: cat.id
         })
       });
-      if(!r.ok) throw new Error(`${r.status}`);
+      if(!r.ok) throw new Error(`status ${r.status}`);
       const d = await r.json();
-      results[cat.name] = d.keywords || [];
+      if(d.error) { console.warn(`Shopping API error: ${d.error} (${d.errorCode})`); results[cat.name] = []; }
+      else results[cat.name] = d.keywords || [];
     } catch(e) {
       console.warn(`Shopping insight failed for ${cat.name}:`, e.message);
       results[cat.name] = [];
