@@ -2,99 +2,118 @@ exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      },
-      body: '',
+      headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type' },
+      body: ''
     };
   }
 
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
-  }
-
   try {
-    const body = JSON.parse(event.body);
-    const apiKey = body.apiKey;
-    const payload = body.payload;
+    const { apiKey, pubDate, daysUntil, channels, targetCtx, snsFormats } = JSON.parse(event.body);
 
-    if (!apiKey || !payload) {
+    const chMap = { ig: '인스타그램 릴스', yt: '유튜브 숏츠', blog: '블로그' };
+    const activeChLabels = channels.map(c => chMap[c]).join(', ');
+    const today = new Date().toISOString().slice(0, 10);
+
+    const prompt = `당신은 한국 패션 SNS 콘텐츠 전략가입니다. 웹서치를 활용해 실시간 트렌드를 조사하고 분석해주세요.
+
+## 미션
+오늘(${today})부터 ${daysUntil}일 후인 ${pubDate}에 발행할 패션 콘텐츠를 지금 기획해야 합니다.
+
+## 조사 요청
+다음을 웹서치로 직접 조사하세요:
+1. 지금 한국에서 뜨고 있는 패션 키워드 TOP 10 (네이버, 무신사, 29CM 트렌드)
+2. 작년 같은 시기(${today.slice(0,4)-1}년 ${today.slice(5,10)})에 뭐가 핫했는지
+3. 올해 새로 뜬 것 vs 작년에도 뜬 것 vs 올해 식은 것
+4. ${pubDate} 기준으로 뭐가 피크칠지 예측
+
+## 컨텍스트
+- 타겟: ${targetCtx || '한국 패션 SNS, 20-30대 여성'}
+- 채널: ${activeChLabels}
+- 팀 발견 SNS 포맷: ${snsFormats || '없음'}
+
+## 출력 형식 (JSON만, 마크다운 없이)
+{
+  "searchSummary": "웹서치로 찾은 핵심 트렌드 요약 2-3줄",
+  "topPicks": [
+    {"type": "now", "keyword": "지금 당장 기획할 아이템", "reason": "검색 데이터/트렌드 근거", "timing": "발행 타이밍"},
+    {"type": "predict", "keyword": "발행일 피크 예측 아이템", "reason": "작년 패턴+현재 상승세 근거", "timing": "피크 예상 시점"},
+    {"type": "newthis", "keyword": "올해 새로 뜬 아이템", "reason": "작년엔 없었고 올해 급상승", "timing": "지금이 적기"},
+    {"type": "fading", "keyword": "지금 식어가는 아이템", "reason": "검색량 하락 근거 (계절 말고 구체적으로)", "timing": "이미 피크 지남"}
+  ],
+  "trendKeywords": [
+    {"keyword": "키워드", "status": "rising|peak|fading", "vsLastYear": "작년 대비 설명", "bestTiming": "최적 발행 시기"}
+  ],
+  "channels": {
+    "ig": "${channels.includes('ig') ? '### 🔥 지금 올려야 할 TOP 5\\n- 아이템: 근거\\n\\n### 릴스 기획 TOP 3\\n- 제목: 타이밍/포맷\\n\\n### ⚠️ 지금 피해야 할 것\\n- 아이템: 구체적 근거 (계절 말고)' : ''}",
+    "yt": "${channels.includes('yt') ? '### 🔥 기획할 주제 TOP 5\\n- 주제: 근거\\n\\n### 영상 기획 TOP 3\\n- 제목(SEO키워드): 타이밍\\n\\n### ⚠️ 피해야 할 것\\n- 아이템: 근거' : ''}",
+    "blog": "${channels.includes('blog') ? '### 🔥 SEO 키워드 TOP 5\\n- 키워드: 검색량 근거\\n\\n### 포스팅 기획 TOP 3\\n- 제목: 구조/타이밍\\n\\n### ⚠️ 피해야 할 것\\n- 키워드: 근거' : ''}"
+  }
+}`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-opus-4-5',
+        max_tokens: 4000,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
       return {
-        statusCode: 400,
-        headers: { 'Access-Control-Allow-Origin': '*' },
-        body: JSON.stringify({ error: 'Missing apiKey or payload' }),
+        statusCode: res.status,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: `Claude API ${res.status}: ${err.slice(0, 200)}` })
       };
     }
 
-    // 웹서치 포함 다중 턴 처리 (tool_use → tool_result 자동 처리)
-    let messages = payload.messages || [];
-    const tools = payload.tools || [];
-    let finalContent = [];
-    let iterations = 0;
-    const MAX_ITER = 5;
+    const data = await res.json();
 
-    while (iterations < MAX_ITER) {
-      iterations++;
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({ ...payload, messages, tools }),
-      });
+    // 텍스트 블록만 추출
+    const raw = (data.content || [])
+      .filter(b => b.type === 'text')
+      .map(b => b.text)
+      .join('');
 
-      const data = await response.json();
+    // JSON 파싱
+    const jsonBlock = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
+    const braceBlock = raw.match(/\{[\s\S]*\}/);
+    const candidate = jsonBlock ? jsonBlock[1].trim() : braceBlock ? braceBlock[0] : null;
 
-      if (!response.ok) {
-        return {
-          statusCode: response.status,
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-          body: JSON.stringify(data),
-        };
-      }
+    if (!candidate) {
+      return {
+        statusCode: 500,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: 'JSON 파싱 실패', raw: raw.slice(0, 300) })
+      };
+    }
 
-      finalContent = data.content || [];
-
-      // stop_reason이 tool_use면 → tool_result 없이 종료 (서버에서 웹서치 실행 불가)
-      // 대신 Claude가 웹서치 결과 없이도 최선을 다하도록 assistant 메시지 추가 후 재요청
-      if (data.stop_reason === 'tool_use') {
-        const toolUseBlocks = finalContent.filter(b => b.type === 'tool_use');
-        messages = [
-          ...messages,
-          { role: 'assistant', content: finalContent },
-          {
-            role: 'user',
-            content: toolUseBlocks.map(tb => ({
-              type: 'tool_result',
-              tool_use_id: tb.id,
-              content: `웹서치 결과를 직접 가져올 수 없습니다. 대신 ${tb.input?.query || '해당 주제'}에 대해 AI가 보유한 최신 지식을 활용해 분석해주세요.`,
-            })),
-          },
-        ];
-        continue;
-      }
-
-      // end_turn이면 완료
-      break;
+    let parsed;
+    try {
+      parsed = JSON.parse(candidate);
+    } catch (e) {
+      const fixed = candidate.replace(/,\s*([}\]])/g, '$1');
+      parsed = JSON.parse(fixed);
     }
 
     return {
       statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-      body: JSON.stringify({ content: finalContent }),
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify(parsed)
     };
+
   } catch (err) {
     return {
       statusCode: 500,
       headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ error: err.message }),
+      body: JSON.stringify({ error: err.message })
     };
   }
 };
